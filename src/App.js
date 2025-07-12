@@ -138,7 +138,7 @@ function function_5() {
 
   const handleRemovePageBreak = () => {
     if (!textareaRef.current) return;
-    const textarea = textareaRef.current;
+    const textarea = textarea.current;
     const cursorPosition = textarea.selectionStart;
     const currentCode = editorState.current;
     const lines = currentCode.split('\n');
