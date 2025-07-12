@@ -1,0 +1,208 @@
+/* 기본 스타일 초기화 및 전체 레이아웃 설정 */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* html과 body가 화면 전체 높이를 차지하도록 설정 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; /* 다양한 OS에서 보기 좋은 기본 글꼴 설정 */
+  -webkit-font-smoothing: antialiased; /* 폰트를 부드럽게 렌더링 (macOS) */
+  -moz-osx-font-smoothing: grayscale; /* 폰트를 부드럽게 렌더링 (Firefox) */
+  background-color: #f0f2f5; /* 전체 페이지 배경색 */
+}
+
+/* App 컴포넌트의 최상위 div 스타일 */
+.App {
+  display: flex; /* 자식 요소들을 가로 또는 세로로 배치하는 flexbox 레이아웃 사용 */
+  flex-direction: column; /* 자식 요소들을 세로로 쌓음 (container) */
+  height: 100vh; /* vh(viewport height) 단위를 사용해 화면 전체 높이를 차지하도록 함 */
+}
+
+/* 에디터와 미리보기 영역을 감싸는 컨테이너 */
+.container {
+  display: flex; /* 자식 요소(editor-pane, preview-pane)를 가로로 �����치 */
+  flex-grow: 1; /* App의 남은 세로 공간을 모두 차지하도록 함 */
+  overflow: hidden; /* 자식 요소가 넘칠 경우 숨김 */
+}
+
+/* 왼쪽 코드 편집창 */
+.editor-pane {
+  flex: 1; /* container의 공간을 1:1 비율로 차지 (preview-pane과 동일) */
+  display: flex; /* 자식인 textarea가 공간을 꽉 채우게 하기 위함 */
+  flex-direction: column;
+  border-right: 1px solid #d1d5da; /* 오른쪽 구분선 */
+  background-color: #fafbfc;
+}
+
+/* 에디터 상단 컨트롤 바 */
+.editor-controls {
+  padding: 10px;
+  border-bottom: 1px solid #d1d5da;
+  display: flex; /* 컨트롤들을 가로로 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 10px; /* 컨트롤 사이의 간격 */
+  flex-wrap: wrap; /* 창이 좁아지면 줄바꿈 */
+}
+
+.editor-controls select {
+  padding: 8px 12px;
+  border-radius: 6px; /* 모서리를 둥글게 */
+  border: 1px solid #d1d5da;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.control-button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5da;
+  font-size: 14px;
+  background-color: #f6f8fa;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.control-button:hover {
+  background-color: #e1e4e8;
+}
+
+/* [추가] 비활성화된 버튼 스타일 */
+.control-button:disabled {
+  background-color: #f6f8fa;
+  color: #959da5;
+  cursor: not-allowed;
+  border-color: #e1e4e8;
+}
+
+
+/* 찾아 바꾸기 패널 스타일 */
+.find-replace-pane {
+  padding: 10px;
+  border-bottom: 1px solid #d1d5da;
+  background-color: #f6f8fa;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.find-replace-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.find-replace-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #586069;
+  flex-shrink: 0;
+}
+
+.find-replace-textarea {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #d1d5da;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  background-color: #ffffff; 
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.find-replace-textarea:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075), 0 0 0 3px rgba(0,123,255,.25);
+}
+
+
+.find-replace-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.find-replace-buttons button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5da;
+  font-size: 14px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.find-replace-buttons button:hover {
+  background-color: #f0f2f5;
+}
+
+.quick-clean-section {
+  border-top: 1px solid #d1d5da;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quick-clean-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #586069;
+  flex-shrink: 0;
+}
+
+.quick-clean-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quick-clean-buttons button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5da;
+  font-size: 14px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.quick-clean-buttons button:hover {
+  background-color: #f0f2f5;
+}
+
+
+.editor-pane textarea {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  padding: 20px;
+  font-family: 'D2Coding', 'Courier New', Courier, monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: none;
+  background-color: transparent;
+}
+
+/* 오른쪽 미리보기 창 */
+.preview-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5;
+}
+
+/* 인쇄 시 적용될 스타일 */
+@media print {
+  .editor-pane, .preview-controls, .find-replace-pane {
+    display: none;
+  }
+
+  .App, .container, .preview-pane {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    background-color: #ffffff;
+  }
+}
