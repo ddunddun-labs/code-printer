@@ -1,7 +1,14 @@
 // React 라이브러리에서 필요한 기능들을 가져옵니다.
-import React, { useState, useRef, useCallback } from 'react'; // useEffect 제거
-// Preview 컴포넌트를 같은 폴더의 Preview.js 파일에서 가져옵니다.
+import React, { useState, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next'; // useTranslation 훅 가져오기
+import { FaUndo, FaRedo } from 'react-icons/fa'; // 아이콘 가져오기
+
+// 컴포넌트들을 가져옵니다.
+import AppControls from './AppControls'; // AppControls 컴포넌트 가져오기
 import Preview from './Preview';
+import PrivacyPolicy from './PrivacyPolicy';
+import Help from './Help'; // Help 컴포넌트 가져오기
+import AdComponent from './AdComponent';
 // App.css 스타일시트 파일을 가져옵니다.
 import './App.css';
 
@@ -10,28 +17,109 @@ const MAX_HISTORY_SIZE = 50;
 
 // App이라는 이름의 함수형 컴포넌트를 정의합니다.
 function App() {
+  const { t, i18n } = useTranslation(); // 다국어 지원 훅
+
   // --- 상태 관리 (State) ---
+  const [view, setView] = useState('app'); // 'app', 'privacy', 'help'
   const [editorState, setEditorState] = useState({
-    current: `// 페이지 분할 테스트를 위한 아주 긴 예제 코드입니다. (5페이지 이상 분량)
-function function_1() {
-    console.log("This is function 1.");
+    current: `/**
+ * Welcome to Code Printer!
+ * 
+ * This tool helps you create beautiful, printable documents from your source code.
+ * Use the controls on the right to customize the appearance of your code.
+ * 
+ * Let's see how it works with a simple React application.
+ */
+
+import React, { useState } from 'react';
+
+// A simple counter component to demonstrate syntax highlighting.
+function Counter({ initialValue = 0 }) {
+  const [count, setCount] = useState(initialValue);
+
+  // You can increment the count.
+  const increment = () => {
+    setCount(prevCount => prevCount + 1);
+  };
+
+  // Or reset it to its initial value.
+  const reset = () => {
+    setCount(initialValue);
+  };
+
+  return (
+    <div className="counter-app" style={styles.counter}>
+      <h3>Counter</h3>
+      <p style={styles.paragraph}>Current count: {count}</p>
+      <button onClick={increment} style={styles.button}>Click me!</button>
+      <button onClick={reset} style={styles.button}>Reset</button>
+    </div>
+  );
 }
 
-function function_2() {
-    console.log("This is function 2.");
-}
-// 찾아 바꾸기 테스트를 위한 단어: apple
-function function_3() {
-    console.log("This is function 3 with apple.");
-}
-// 찾아 바꾸기 테스트를 위한 단어: apple
-function function_4() {
-    console.log("This is function 4 with apple.");
+/**
+ * [TIP] Automatic Page Break
+ * 
+ * If the code gets long enough, you will see a red dotted line.
+ * This line indicates where an automatic page break will occur
+ * on a standard A4 sheet.
+ * 
+ * You can adjust font size, line height, and margins to control this.
+ */
+
+// Main application component that uses the Counter.
+function App() {
+  return (
+    <main style={styles.container}>
+      <h1>My Application</h1>
+      <p>This app uses multiple Counter components.</p>
+      <Counter initialValue={5} />
+      <Counter />
+    </main>
+  );
 }
 
-function function_5() {
-    console.log("This is function 5.");
-}
+// You can even include CSS-in-JS for styling.
+const styles = {
+  container: {
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+  },
+  counter: {
+    marginBottom: '15px',
+    padding: '10px',
+    border: '1px dashed #eee',
+  },
+  paragraph: {
+    color: '#0056b3', // A nice blue color
+    fontSize: '16px',
+  },
+  button: {
+    marginRight: '10px',
+    padding: '8px 12px',
+  }
+};
+
+%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
+
+/**
+ * [TIP] Manual Page Break
+ * 
+ * The line above is a special marker.
+ * It creates a manual page break in the printout,
+ * represented by a blue line in the preview.
+ * 
+ * You can add or remove page breaks using the buttons in the editor toolbar.
+ * This is useful for organizing long code into multiple pages.
+ */
+
+// More features to explore:
+// 1. Find & Replace: Use the panel to refactor code quickly.
+// 2. Quick Clean: Tidy up your code with one-click actions.
+// 3. Undo/Redo: Don't worry about mistakes (Ctrl+Z / Ctrl+Y).
+
+export default App;
 `,
     history: [],
     redoStack: [],
@@ -50,17 +138,11 @@ function function_5() {
 
   const textareaRef = useRef(null);
   const debounceRef = useRef(null);
-  // [추가] 사용자의 타이핑 상태를 추적하기 위한 ref
   const isTypingRef = useRef(false);
-  const PAGE_BREAK_MARKER = '\n%%%%%%%%%% PAGE_BREAK %%%%%%%%%%\n';
+  const PAGE_BREAK_MARKER = `\n%%%%%%%%%% PAGE_BREAK %%%%%%%%%%\n`;
   const PAGE_BREAK_MARKER_TEXT = '%%%%%%%%%% PAGE_BREAK %%%%%%%%%%';
 
   // --- 히스토리 관리 ---
-
-  /**
-   * [수정] 히스토리 스택에 새로운 상태를 추가하는 핵심 함수
-   * @param {string} newCode - 새로운 코드 내용
-   */
   const pushStateToHistory = (newCode) => {
     setEditorState(prev => {
       const newHistory = [...prev.history, prev.current];
@@ -70,54 +152,37 @@ function function_5() {
       return {
         current: newCode,
         history: newHistory,
-        redoStack: [], // 새로운 변경 시 redo 스택은 항상 비워짐
+        redoStack: [],
       };
     });
   };
 
   // --- 이벤트 핸들러 ---
-
-  /**
-   * [수정] 사용자의 직접적인 코드 입력을 처리하는 함수 (디바운싱 로직 개선)
-   */
   const handleCodeChange = (e) => {
     const newCode = e.target.value;
-
-    // 디바운스 타이머가 있다면 초기화합니다.
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
-
-    // 만약 새로운 타이핑 시퀀스가 시작된 것이라면,
-    // 변경 전의 상태를 히스토리에 먼저 저장합니다.
     if (!isTypingRef.current) {
       isTypingRef.current = true;
-      // 현재 상태를 히스토리에 추가합니다.
       setEditorState(prev => ({
         ...prev,
         history: [...prev.history, prev.current],
         redoStack: []
       }));
     }
-
-    // 화면에는 즉시 변경 내용을 반영합니다.
     setEditorState(prev => ({ ...prev, current: newCode }));
-
-    // 500ms 후에 타이핑이 멈췄다고 간주하고, 플래그를 리셋합니다.
     debounceRef.current = setTimeout(() => {
       isTypingRef.current = false;
     }, 500);
   };
   
-  /**
-   * [수정] 버튼 클릭 등 즉각적인 변경을 위한 함수
-   */
   const updateCodeImmediately = (newCode) => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
     isTypingRef.current = false;
-    pushStateToHistory(newCode);
+    pushStateToHistory(newCode.trim()); // trim() 추가
   };
 
   const handleInsertPageBreak = () => {
@@ -125,8 +190,8 @@ function function_5() {
     const textarea = textareaRef.current;
     const cursorPosition = textarea.selectionStart;
     const newCode = 
-      editorState.current.substring(0, cursorPosition) + 
-      PAGE_BREAK_MARKER + 
+      editorState.current.substring(0, cursorPosition) +
+      PAGE_BREAK_MARKER +
       editorState.current.substring(cursorPosition);
     updateCodeImmediately(newCode);
     setTimeout(() => {
@@ -136,56 +201,56 @@ function function_5() {
     }, 0);
   };
 
-     const handleRemovePageBreak = () => {
-       if (!textareaRef.current) return;
-       const textarea = textareaRef.current; // 변수 선언을 위로 올렸습니다.
-       const cursorPosition = textarea.selectionStart;
-       const currentCode = editorState.current;
-       const lines = currentCode.split('\n');
+  const handleRemovePageBreak = () => {
+    if (!textareaRef.current) return;
+    const textarea = textareaRef.current;
+    const cursorPosition = textarea.selectionStart;
+    const currentCode = editorState.current;
+    const lines = currentCode.split('\n');
+    
+    let charCount = 0;
+    let cursorLineIndex = -1;
+    for (let i = 0; i < lines.length; i++) {
+      charCount += lines[i].length + 1;
+      if (cursorPosition <= charCount) {
+        cursorLineIndex = i;
+        break;
+      }
+    }
+    if (cursorLineIndex === -1) cursorLineIndex = lines.length -1;
 
-       let charCount = 0;
-       let cursorLineIndex = -1;
-         for (let i = 0; i < lines.length; i++) {
-           charCount += lines[i].length + 1;
-           if (cursorPosition <= charCount) {
-             cursorLineIndex = i;
-             break;
-           }
-         }
-         if (cursorLineIndex === -1) cursorLineIndex = lines.length -1;
-  
-         const searchStartLine = Math.max(0, cursorLineIndex - 1);
-         const searchEndLine = Math.min(lines.length - 1, cursorLineIndex + 1);
-         let markerFound = false;
-         let newLines = [...lines];
-         let firstMarkerLineIndex = -1;
-         for (let i = searchStartLine; i <= searchEndLine; i++) {
-           if (newLines[i].trim() === PAGE_BREAK_MARKER_TEXT) {
-             firstMarkerLineIndex = i;
-             markerFound = true;
-             break;
-           }
-         }
-         if (markerFound) {
-           newLines.splice(firstMarkerLineIndex, 1);
-           if (newLines[firstMarkerLineIndex] && newLines[firstMarkerLineIndex].trim() === '') {
-             newLines.splice(firstMarkerLineIndex, 1);
-           }
-           if (newLines[firstMarkerLineIndex - 1] && newLines[firstMarkerLineIndex - 1].trim() === '') {
-             newLines.splice(firstMarkerLineIndex - 1, 1);
-           }
-           const newCode = newLines.join('\n');
-           updateCodeImmediately(newCode);
-           setTimeout(() => {
-             let newCursorPosition = 0;
-             for(let i=0; i < firstMarkerLineIndex; i++) {
-               newCursorPosition += (newLines[i] ? newLines[i].length : 0) + 1;
-             }
-             textarea.focus();
-             textarea.setSelectionRange(newCursorPosition, newCursorPosition);
-           }, 0);
-         }
-       };
+    const searchStartLine = Math.max(0, cursorLineIndex - 1);
+    const searchEndLine = Math.min(lines.length - 1, cursorLineIndex + 1);
+    let markerFound = false;
+    let newLines = [...lines];
+    let firstMarkerLineIndex = -1;
+    for (let i = searchStartLine; i <= searchEndLine; i++) {
+      if (newLines[i].trim() === PAGE_BREAK_MARKER_TEXT) {
+        firstMarkerLineIndex = i;
+        markerFound = true;
+        break;
+      }
+    }
+    if (markerFound) {
+      newLines.splice(firstMarkerLineIndex, 1);
+      if (newLines[firstMarkerLineIndex] && newLines[firstMarkerLineIndex].trim() === '') {
+        newLines.splice(firstMarkerLineIndex, 1);
+      }
+      if (newLines[firstMarkerLineIndex - 1] && newLines[firstMarkerLineIndex - 1].trim() === '') {
+        newLines.splice(firstMarkerLineIndex - 1, 1);
+      }
+      const newCode = newLines.join('\n');
+      updateCodeImmediately(newCode);
+      setTimeout(() => {
+        let newCursorPosition = 0;
+        for(let i=0; i < firstMarkerLineIndex; i++) {
+          newCursorPosition += (newLines[i] ? newLines[i].length : 0) + 1;
+        }
+        textarea.focus();
+        textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+      }, 0);
+    }
+  };
 
   const handleFindNext = () => {
     if (!textareaRef.current || !findText) return;
@@ -196,43 +261,32 @@ function function_5() {
     if (nextIndex !== -1) {
       textarea.focus();
       textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
-    } else {
-      const firstIndex = currentCode.indexOf(findText);
-      if (firstIndex !== -1) {
-        textarea.focus();
-        textarea.setSelectionRange(firstIndex, firstIndex + findText.length);
-      } else {
-        alert("더 이상 일치하는 내용이 없습니다.");
-      }
     }
   };
 
-    const handleReplace = () => {
-      if (!textareaRef.current || !findText) return;
-      const textarea = textareaRef.current; // 변수 선언을 위로 올렸습니다.
-      const { selectionStart, selectionEnd } = textarea;
-      const selectedText = textarea.value.substring(selectionStart, selectionEnd);
-      if (selectedText === findText) {
-        const newCode =
-          editorState.current.substring(0, selectionStart) +
-          replaceText +
-          editorState.current.substring(selectionEnd);
-        updateCodeImmediately(newCode);
-        setTimeout(() => {
-          const nextIndex = newCode.indexOf(findText, selectionStart + replaceText.length);
-          if (nextIndex !== -1) {
-            textarea.focus();
-            textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
-          }
-        }, 0);
-      } else {
-        handleFindNext();
-      }
-    };
+  const handleReplace = () => {
+    if (!textareaRef.current || !findText) return;
+    const textarea = textareaRef.current;
+    const { selectionStart, selectionEnd } = textarea;
+    const selectedText = textarea.value.substring(selectionStart, selectionEnd);
+    if (selectedText === findText) {
+      const newCode = 
+        editorState.current.substring(0, selectionStart) +
+        replaceText +
+        editorState.current.substring(selectionEnd);
+      updateCodeImmediately(newCode);
+      setTimeout(() => {
+        const nextIndex = newCode.indexOf(findText, selectionStart + replaceText.length);
+        if (nextIndex !== -1) {
+          textarea.focus();
+          textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
+        }
+      }, 0);
+    }
+  };
+
   const handleReplaceAll = () => {
     if (!findText) return;
-    
-    // 정규표현식 특수 문자를 이스케이프 처리합니다.
     const escapedFindText = findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(escapedFindText, 'g');
     const matches = editorState.current.match(regex);
@@ -241,13 +295,13 @@ function function_5() {
     if (count > 0) {
       const newCode = editorState.current.replaceAll(findText, replaceText);
       updateCodeImmediately(newCode);
-      alert(`${count}개의 항목을 바꿨습니다.`);
+      alert(t('alert.replaceAllCount', { count }));
     } else {
-      alert("일치하는 내용이 없습니다.");
+      alert(t('alert.noMatches'));
     }
   };
 
-  const handleQuickReplace = (find, replace, message, loop = false) => {
+  const handleQuickReplace = (find, replace, messageKey, loop = false) => {
     let newCode = editorState.current;
     if (loop) {
       while (newCode.includes(find)) {
@@ -258,9 +312,7 @@ function function_5() {
     }
     if (editorState.current !== newCode) {
       updateCodeImmediately(newCode);
-      alert(`'${message}' 정리 완료!`);
-    } else {
-      alert("변경할 항목이 없습니다.");
+      alert(t(messageKey));
     }
   };
 
@@ -270,9 +322,7 @@ function function_5() {
     const newCode = newLines.join('\n');
     if (editorState.current !== newCode) {
       updateCodeImmediately(newCode);
-      alert('모든 줄의 첫 문자를 제거했습니다.');
-    } else {
-      alert('변경할 내용이 없습니다.');
+      alert(t('alert.removeFirstChar'));
     }
   };
 
@@ -314,100 +364,124 @@ function function_5() {
     }
   }, [handleUndo, handleRedo]);
 
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+  };
 
   // --- 렌더링 (Rendering) ---
-  return (
-    <div className="App">
-      <div className="container">
-        <div className="editor-pane">
-          <div className="editor-controls">
-            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-              <option value="csharp">C#</option>
-              <option value="cpp">C++</option>
-              <option value="html">HTML</option>
-              <option value="css">CSS</option>
-              <option value="sql">SQL</option>
-              <option value="plaintext">Plain Text</option>
-            </select>
-            <button onClick={handleInsertPageBreak} className="control-button">페이지 나누기 삽입</button>
-            <button onClick={handleRemovePageBreak} className="control-button">페이지 나누기 삭제</button>
-            <button onClick={() => setShowFindReplace(!showFindReplace)} className="control-button">찾아 바꾸기</button>
-            <button onClick={handleUndo} disabled={editorState.history.length === 0} className="control-button">되돌리기</button>
-            <button onClick={handleRedo} disabled={editorState.redoStack.length === 0} className="control-button">다시 실행</button>
-          </div>
-
-          {showFindReplace && (
-            <div className="find-replace-pane">
-              <div className="find-replace-group">
-                <label htmlFor="find-input">찾을 내용:</label>
-                <textarea 
-                  id="find-input"
-                  className="find-replace-textarea"
-                  value={findText}
-                  onChange={(e) => setFindText(e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div className="find-replace-group">
-                <label htmlFor="replace-input">바꿀 내용:</label>
-                <textarea 
-                  id="replace-input"
-                  className="find-replace-textarea"
-                  value={replaceText}
-                  onChange={(e) => setReplaceText(e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div className="find-replace-buttons">
-                <button onClick={handleFindNext}>다음 찾기</button>
-                <button onClick={handleReplace}>바꾸기</button>
-                <button onClick={handleReplaceAll}>모두 바꾸기</button>
-              </div>
-
-              <div className="quick-clean-section">
-                <span className="quick-clean-title">빠른 정리:</span>
-                <div className="quick-clean-buttons">
-                  <button onClick={() => handleQuickReplace('\n\n', '\n', '빈 줄 제거', true)}>
-                    연속된 빈 줄 제거
-                  </button>
-                  <button onClick={() => handleQuickReplace('\n}', ' }', '닫는 괄호 올리기')}>
-                    닫는 괄호 올리기
-                  </button>
-                  <button onClick={handleRemoveFirstChar}>
-                    첫 문자 제거 (줄 번호)
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <textarea
-            ref={textareaRef}
-            value={editorState.current}
-            onChange={handleCodeChange}
-            onKeyDown={handleKeyDown}
-            spellCheck="false"
-          />
+  const renderMainApp = () => (
+    <div className="container">
+      <div className="editor-pane">
+        <div className="editor-controls">
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="csharp">C#</option>
+            <option value="cpp">C++</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="sql">SQL</option>
+            <option value="plaintext">Plain Text</option>
+          </select>
+          <button onClick={handleInsertPageBreak} className="control-button">{t('button.addPageBreak')}</button>
+          <button onClick={handleRemovePageBreak} className="control-button">{t('button.removePageBreak')}</button>
+          <button onClick={() => setShowFindReplace(!showFindReplace)} className="control-button">{t('button.findReplace')}</button>
+          <button onClick={handleUndo} disabled={editorState.history.length === 0} className="control-button icon-button">
+            <FaUndo />
+          </button>
+          <button onClick={handleRedo} disabled={editorState.redoStack.length === 0} className="control-button icon-button">
+            <FaRedo />
+          </button>
         </div>
 
-        <Preview 
-          code={editorState.current}
-          language={language} 
-          fontFamily={fontFamily}
-          onFontFamilyChange={setFontFamily}
-          fontSize={fontSize}
-          onFontSizeChange={setFontSize}
-          letterSpacing={letterSpacing}
-          onLetterSpacingChange={setLetterSpacing}
-          lineHeight={lineHeight}
-          onLineHeightChange={setLineHeight}
-          pageMarginV={pageMarginV}
-          onPageMarginVChange={setPageMarginV}
+        {showFindReplace && (
+          <div className="find-replace-pane">
+            <div className="find-replace-group">
+              <label htmlFor="find-input">{t('findReplace.findLabel')}:</label>
+              <textarea 
+                id="find-input"
+                className="find-replace-textarea"
+                value={findText}
+                onChange={(e) => setFindText(e.target.value)}
+                rows={2}
+              />
+            </div>
+            <div className="find-replace-group">
+              <label htmlFor="replace-input">{t('findReplace.replaceLabel')}:</label>
+              <textarea 
+                id="replace-input"
+                className="find-replace-textarea"
+                value={replaceText}
+                onChange={(e) => setReplaceText(e.target.value)}
+                rows={2}
+              />
+            </div>
+            <div className="find-replace-buttons">
+              <button onClick={handleFindNext}>{t('button.findNext')}</button>
+              <button onClick={handleReplace}>{t('button.replace')}</button>
+              <button onClick={handleReplaceAll}>{t('button.replaceAll')}</button>
+            </div>
+
+            <div className="quick-clean-section">
+              <span className="quick-clean-title">{t('quickClean.title')}:</span>
+              <div className="quick-clean-buttons">
+                <button onClick={() => handleQuickReplace('\n\n', '\n', 'alert.quickClean.removeEmptyLines', true)}>
+                  {t('quickClean.removeEmptyLines')}
+                </button>
+                <button onClick={() => handleQuickReplace('\n}', ' }', 'alert.quickClean.liftBrackets')}>
+                  {t('quickClean.liftBrackets')}
+                </button>
+                <button onClick={handleRemoveFirstChar}>
+                  {t('quickClean.removeFirstChar')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <textarea
+          ref={textareaRef}
+          value={editorState.current}
+          onChange={handleCodeChange}
+          onKeyDown={handleKeyDown}
+          spellCheck="false"
         />
       </div>
+
+      <Preview 
+        code={editorState.current}
+        language={language} 
+        fontFamily={fontFamily}
+        onFontFamilyChange={setFontFamily}
+        fontSize={fontSize}
+        onFontSizeChange={setFontSize}
+        letterSpacing={letterSpacing}
+        onLetterSpacingChange={setLetterSpacing}
+        lineHeight={lineHeight}
+        onLineHeightChange={setLineHeight}
+        pageMarginV={pageMarginV}
+        onPageMarginVChange={setPageMarginV}
+      />
+    </div>
+  );
+
+  const renderContent = () => {
+    switch (view) {
+      case 'privacy':
+        return <PrivacyPolicy onNavigate={setView} />;
+      case 'help':
+        return <Help onNavigate={setView} />;
+      default:
+        return renderMainApp();
+    }
+  };
+
+  return (
+    <div className="App">
+      <AppControls onNavigate={setView} changeLanguage={changeLanguage} /> {/* AppControls 컴포넌트 사용 */}
+      {renderContent()}
+      {view === 'app' && <AdComponent className="ad-component" />}
     </div>
   );
 }
