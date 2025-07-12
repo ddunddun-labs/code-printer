@@ -136,56 +136,56 @@ function function_5() {
     }, 0);
   };
 
-  const handleRemovePageBreak = () => {
-    if (!textareaRef.current) return;
-    const textarea = textarea.current;
-    const cursorPosition = textarea.selectionStart;
-    const currentCode = editorState.current;
-    const lines = currentCode.split('\n');
-    
-    let charCount = 0;
-    let cursorLineIndex = -1;
-    for (let i = 0; i < lines.length; i++) {
-      charCount += lines[i].length + 1;
-      if (cursorPosition <= charCount) {
-        cursorLineIndex = i;
-        break;
-      }
-    }
-    if (cursorLineIndex === -1) cursorLineIndex = lines.length -1;
+     const handleRemovePageBreak = () => {
+       if (!textareaRef.current) return;
+       const textarea = textareaRef.current; // 변수 선언을 위로 올렸습니다.
+       const cursorPosition = textarea.selectionStart;
+       const currentCode = editorState.current;
+       const lines = currentCode.split('\n');
 
-    const searchStartLine = Math.max(0, cursorLineIndex - 1);
-    const searchEndLine = Math.min(lines.length - 1, cursorLineIndex + 1);
-    let markerFound = false;
-    let newLines = [...lines];
-    let firstMarkerLineIndex = -1;
-    for (let i = searchStartLine; i <= searchEndLine; i++) {
-      if (newLines[i].trim() === PAGE_BREAK_MARKER_TEXT) {
-        firstMarkerLineIndex = i;
-        markerFound = true;
-        break;
-      }
-    }
-    if (markerFound) {
-      newLines.splice(firstMarkerLineIndex, 1);
-      if (newLines[firstMarkerLineIndex] && newLines[firstMarkerLineIndex].trim() === '') {
-        newLines.splice(firstMarkerLineIndex, 1);
-      }
-      if (newLines[firstMarkerLineIndex - 1] && newLines[firstMarkerLineIndex - 1].trim() === '') {
-        newLines.splice(firstMarkerLineIndex - 1, 1);
-      }
-      const newCode = newLines.join('\n');
-      updateCodeImmediately(newCode);
-      setTimeout(() => {
-        let newCursorPosition = 0;
-        for(let i=0; i < firstMarkerLineIndex; i++) {
-          newCursorPosition += (newLines[i] ? newLines[i].length : 0) + 1;
-        }
-        textarea.focus();
-        textarea.setSelectionRange(newCursorPosition, newCursorPosition);
-      }, 0);
-    }
-  };
+       let charCount = 0;
+       let cursorLineIndex = -1;
+         for (let i = 0; i < lines.length; i++) {
+           charCount += lines[i].length + 1;
+           if (cursorPosition <= charCount) {
+             cursorLineIndex = i;
+             break;
+           }
+         }
+         if (cursorLineIndex === -1) cursorLineIndex = lines.length -1;
+  
+         const searchStartLine = Math.max(0, cursorLineIndex - 1);
+         const searchEndLine = Math.min(lines.length - 1, cursorLineIndex + 1);
+         let markerFound = false;
+         let newLines = [...lines];
+         let firstMarkerLineIndex = -1;
+         for (let i = searchStartLine; i <= searchEndLine; i++) {
+           if (newLines[i].trim() === PAGE_BREAK_MARKER_TEXT) {
+             firstMarkerLineIndex = i;
+             markerFound = true;
+             break;
+           }
+         }
+         if (markerFound) {
+           newLines.splice(firstMarkerLineIndex, 1);
+           if (newLines[firstMarkerLineIndex] && newLines[firstMarkerLineIndex].trim() === '') {
+             newLines.splice(firstMarkerLineIndex, 1);
+           }
+           if (newLines[firstMarkerLineIndex - 1] && newLines[firstMarkerLineIndex - 1].trim() === '') {
+             newLines.splice(firstMarkerLineIndex - 1, 1);
+           }
+           const newCode = newLines.join('\n');
+           updateCodeImmediately(newCode);
+           setTimeout(() => {
+             let newCursorPosition = 0;
+             for(let i=0; i < firstMarkerLineIndex; i++) {
+               newCursorPosition += (newLines[i] ? newLines[i].length : 0) + 1;
+             }
+             textarea.focus();
+             textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+           }, 0);
+         }
+       };
 
   const handleFindNext = () => {
     if (!textareaRef.current || !findText) return;
@@ -207,29 +207,28 @@ function function_5() {
     }
   };
 
-  const handleReplace = () => {
-    if (!textareaRef.current || !findText) return;
-    const textarea = textarea.current;
-    const { selectionStart, selectionEnd } = textarea;
-    const selectedText = textarea.value.substring(selectionStart, selectionEnd);
-    if (selectedText === findText) {
-      const newCode = 
-        editorState.current.substring(0, selectionStart) + 
-        replaceText + 
-        editorState.current.substring(selectionEnd);
-      updateCodeImmediately(newCode);
-      setTimeout(() => {
-        const nextIndex = newCode.indexOf(findText, selectionStart + replaceText.length);
-        if (nextIndex !== -1) {
-          textarea.focus();
-          textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
-        }
-      }, 0);
-    } else {
-      handleFindNext();
-    }
-  };
-
+    const handleReplace = () => {
+      if (!textareaRef.current || !findText) return;
+      const textarea = textareaRef.current; // 변수 선언을 위로 올렸습니다.
+      const { selectionStart, selectionEnd } = textarea;
+      const selectedText = textarea.value.substring(selectionStart, selectionEnd);
+      if (selectedText === findText) {
+        const newCode =
+          editorState.current.substring(0, selectionStart) +
+          replaceText +
+          editorState.current.substring(selectionEnd);
+        updateCodeImmediately(newCode);
+        setTimeout(() => {
+          const nextIndex = newCode.indexOf(findText, selectionStart + replaceText.length);
+          if (nextIndex !== -1) {
+            textarea.focus();
+            textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
+          }
+        }, 0);
+      } else {
+        handleFindNext();
+      }
+    };
   const handleReplaceAll = () => {
     if (!findText) return;
     
