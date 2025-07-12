@@ -138,7 +138,7 @@ function function_5() {
 
   const handleRemovePageBreak = () => {
     if (!textareaRef.current) return;
-    const textarea = textareaRef.current;
+    const textarea = textarea.current;
     const cursorPosition = textarea.selectionStart;
     const currentCode = editorState.current;
     const lines = currentCode.split('\n');
@@ -234,7 +234,12 @@ function function_5() {
     if (!findText) return;
     const newCode = editorState.current.replaceAll(findText, replaceText);
     if (editorState.current !== newCode) {
-      const count = (editorState.current.match(new RegExp(findText.replace(/[.*+?^${}()|[\u005C\]/g, '\\$&'), 'g')) || []).length;
+      // 정규표현식 특수 문자를 이스케이프 처리하여 정확한 개수를 셉니다.
+      const escapedFindText = findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escapedFindText, 'g');
+      const matches = editorState.current.match(regex);
+      const count = matches ? matches.length : 0;
+      
       updateCodeImmediately(newCode);
       alert(`${count}개의 항목을 바꿨습니다.`);
     } else {
