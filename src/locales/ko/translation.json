@@ -1,0 +1,89 @@
+{
+  "button": {
+    "addPageBreak": "페이지 나누기",
+    "removePageBreak": "나누기 삭제",
+    "findReplace": "찾기/바꾸기",
+    "undo": "실행 취소",
+    "redo": "다시 실행",
+    "findNext": "다음 찾기",
+    "replace": "바꾸기",
+    "replaceAll": "모두 바꾸기",
+    "print": "인쇄"
+  },
+  "findReplace": {
+    "findLabel": "찾을 내용",
+    "replaceLabel": "바꿀 내용"
+  },
+  "quickClean": {
+    "title": "빠른 정리",
+    "removeEmptyLines": "연속된 빈 줄 제거",
+    "liftBrackets": "닫는 괄호 올리기",
+    "removeFirstChar": "첫 문자 제거 (줄 번호)"
+  },
+  "footer": {
+    "help": "도움말",
+    "privacyPolicy": "개인정보처리방침",
+    "suggestImprovements": "문의 및 제안" 
+  },
+  "help": {
+    "backToApp": "앱으로 돌아가기",
+    "title": "도움말",
+    "about": {
+      "title": "서비스 소개",
+      "p1": "Code Printer는 개발자들이 소스 코드를 깔끔하고 보기 좋게 인쇄하거나 PDF로 변환할 수 있도록 돕는 웹 애플리케이션입니다.",
+      "p2": "구문 강조, 페이지 나누기, 실시간 미리보기, 강력한 편집 도구 등 다양한 기능을 제공하여 코드 출력 경험을 최적화합니다."
+    },
+    "editor": {
+      "title": "코드 에디터",
+      "p1": "이곳에 소스 코드를 붙여넣거나 직접 작성할 수 있습니다. 코드는 자동으로 구문 강조 처리됩니다."
+    },
+    "preview": {
+      "title": "실시간 미리보기",
+      "p1": "에디터에 입력된 코드가 인쇄될 모양 그대로 실시간으로 표시됩니다. 글꼴, 크기, 여백 등 다양한 옵션을 조절하여 원하는 결과물을 만드세요."
+    },
+    "pageBreak": {
+      "title": "페이지 나누기",
+      "p1": "미리보기 화면의 빨간 점선은 A4 용지 기준의 자동 페이지 나눔 위치를 나타냅니다.",
+      "p2": "'페이지 나누기' 버튼을 클릭하면 코드 에디터의 커서 위치에 수동 페이지 나눔 표시자(%%%%%%%%%% PAGE_BREAK %%%%%%%%%%)가 삽입됩니다. 이 표시자는 미리보기에서 파란색 구분선으로 보이며, 실제 인쇄 시에도 페이지를 나눕니다."
+    },
+    "margins": {
+      "title": "페이지 여백",
+      "p1": "좌우 여백은 15mm로 고정되어 있으며, 위아래 여백은 미리보기 화면에서 직접 조절할 수 있습니다. 조절된 여백은 붉은색 자동 페이지 나눔선 계산에도 반영됩니다."
+    },
+    "findReplace": {
+      "title": "찾기 및 바꾸기",
+      "p1": "찾기/바꾸기 기능을 통해 특정 텍스트를 찾거나 다른 텍스트로 변경할 수 있습니다. 개행 문자(\n)를 포함한 검색과 변경도 지원합니다."
+    },
+    "quickClean": {
+      "title": "빠른 정리",
+      "p1": "자주 사용하는 코드 정리 작업을 버튼 클릭 한 번으로 수행할 수 있습니다. (연속된 빈 줄 제거, 닫는 괄호 올리기 등)"
+    },
+    "undoRedo": {
+      "title": "실행 취소 / 다시 실행",
+      "p1": "최대 50개의 작업 내역을 기억하여 이전 상태로 되돌리거나(Ctrl+Z) 다시 실행(Ctrl+Y)할 수 있습니다."
+    }
+  },
+  "alert": {
+    "noMoreMatches": "더 이상 일치하는 내용이 없습니다.",
+    "replaceAllCount": "{{count}}개의 항목을 바꿨습니다.",
+    "noMatches": "일치하는 내용이 없습니다.",
+    "noChange": "변경할 항목이 없습니다.",
+    "removeFirstChar": "모든 줄의 첫 문자를 제거했습니다.",
+    "quickClean": {
+      "removeEmptyLines": "'빈 줄 제거' 정리 완료!",
+      "liftBrackets": "'닫는 괄호 올리기' 정리 완료!"
+    }
+  },
+  "preview": {
+    "font": "글꼴",
+    "fontSize": "크기(pt)",
+    "letterSpacing": "자간(px)",
+    "lineHeight": "줄간격",
+    "pageMargin": "위/아래 여백(mm)",
+    "manualPageBreak": "강제 페이지 나눔"
+  },
+  "header": {
+    "siteTitle": "Code Printer",
+    "siteTagline": "클릭 한 번으로 소스 코드를 깔끔하게 인쇄하세요."
+  }
+}

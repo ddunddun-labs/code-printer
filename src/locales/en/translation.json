@@ -1,0 +1,89 @@
+{
+  "button": {
+    "addPageBreak": "Add Page Break",
+    "removePageBreak": "Remove Break",
+    "findReplace": "Find/Replace",
+    "undo": "Undo",
+    "redo": "Redo",
+    "findNext": "Find Next",
+    "replace": "Replace",
+    "replaceAll": "Replace All",
+    "print": "Print"
+  },
+  "findReplace": {
+    "findLabel": "Find what",
+    "replaceLabel": "Replace with"
+  },
+  "quickClean": {
+    "title": "Quick Clean",
+    "removeEmptyLines": "Remove Empty Lines",
+    "liftBrackets": "Lift Brackets",
+    "removeFirstChar": "Remove First Char (Line No.)"
+  },
+  "footer": {
+    "help": "Help",
+    "privacyPolicy": "Privacy Policy",
+    "suggestImprovements": "Contact & Suggestions"
+  },
+  "help": {
+    "backToApp": "Back to App",
+    "title": "Help",
+    "about": {
+      "title": "About This Service",
+      "p1": "Code Printer is a web application designed to help developers print or convert source code into clean, well-formatted PDF documents.",
+      "p2": "It offers various features such as syntax highlighting, page breaking, real-time preview, and powerful editing tools to optimize your code output experience."
+    },
+    "editor": {
+      "title": "Code Editor",
+      "p1": "You can paste or write your source code here. The code will be automatically syntax-highlighted."
+    },
+    "preview": {
+      "title": "Live Preview",
+      "p1": "The code entered in the editor is displayed in real-time as it will be printed. Adjust various options like font, size, and margins to create your desired output."
+    },
+    "pageBreak": {
+      "title": "Page Break",
+      "p1": "The red dotted line on the preview screen indicates the automatic page break position based on A4 paper.",
+      "p2": "Clicking the 'Add Page Break' button inserts a manual page break marker (%%%%%%%%%% PAGE_BREAK %%%%%%%%%%) at the cursor's position in the code editor. This marker appears as a blue line in the preview and will also break the page in the actual print."
+    },
+    "margins": {
+      "title": "Page Margins",
+      "p1": "Left and right margins are fixed at 15mm. Top and bottom margins can be adjusted directly in the preview. The adjusted margins are also reflected in the calculation of the red automatic page break lines."
+    },
+    "findReplace": {
+      "title": "Find and Replace",
+      "p1": "You can find specific text or replace it with other text using the Find/Replace feature. It also supports search and replace including newline characters (\n)."
+    },
+    "quickClean": {
+      "title": "Quick Clean",
+      "p1": "Perform common code cleaning tasks with a single click. (e.g., removing consecutive empty lines, lifting closing brackets)"
+    },
+    "undoRedo": {
+      "title": "Undo / Redo",
+      "p1": "You can undo (Ctrl+Z) or redo (Ctrl+Y) up to the last 50 actions."
+    }
+  },
+  "alert": {
+    "noMoreMatches": "No more matches found.",
+    "replaceAllCount": "Replaced {{count}} items.",
+    "noMatches": "No matches found.",
+    "noChange": "Nothing to change.",
+    "removeFirstChar": "Removed the first character from all lines.",
+    "quickClean": {
+      "removeEmptyLines": "'Remove Empty Lines' clean complete!",
+      "liftBrackets": "'Lift Brackets' clean complete!"
+    }
+  },
+  "preview": {
+    "font": "Font",
+    "fontSize": "Font Size (pt)",
+    "letterSpacing": "Letter Spacing (px)",
+    "lineHeight": "Line Height",
+    "pageMargin": "Top/Bottom Margin (mm)",
+    "manualPageBreak": "Manual Page Break"
+  },
+  "header": {
+    "siteTitle": "Code Printer",
+    "siteTagline": "Print your source code cleanly with one click."
+  }
+}

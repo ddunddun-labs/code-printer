@@ -1,5 +1,6 @@
 // React와 관련 Hook들을 가져옵니다.
 import React, { useMemo, useState, useLayoutEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next'; // useTranslation 훅 가져오기
 // 코드 하이라이팅을 위한 highlight.js 라이브러리를 가져옵니다.
 import hljs from 'highlight.js';
 // highlight.js의 'github' 테마 스타일시트를 가져옵니다.
@@ -8,7 +9,9 @@ import 'highlight.js/styles/github.css';
 import './Preview.css';
 
 // [수정] 페이지 나누기 표시자를 App.js와 동일하게 변경합니다.
-const PAGE_BREAK_MARKER = '\n%%%%%%%%%% PAGE_BREAK %%%%%%%%%%\n';
+const PAGE_BREAK_MARKER = `
+%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
+`;
 
 /**
  * 개별 코드 블록(페이지)을 렌더링하는 하위 컴포넌트
@@ -72,6 +75,7 @@ const Preview = ({
   lineHeight, onLineHeightChange,
   pageMarginV, onPageMarginVChange
 }) => {
+  const { t } = useTranslation(); // useTranslation 훅 사용
 
   const handlePrint = () => {
     window.print();
@@ -95,9 +99,8 @@ const Preview = ({
   return (
     <div className="preview-pane">
       <div className="preview-controls">
-        {/* 컨트롤 UI는 변경 없음 */}
         <div className="control-group">
-          <span className="control-label">글꼴:</span>
+          <span className="control-label">{t('preview.font')}:</span>
           <select value={fontFamily} onChange={(e) => onFontFamilyChange(e.target.value)} className="font-family-select">
             <option value="D2Coding, Consolas, 'Courier New', monospace">D2Coding</option>
             <option value="Consolas, 'Courier New', monospace">Consolas</option>
@@ -106,22 +109,22 @@ const Preview = ({
           </select>
         </div>
         <div className="control-group">
-          <span className="control-label">크기(pt):</span>
+          <span className="control-label">{t('preview.fontSize')}:</span>
           <input type="number" value={fontSize} onChange={(e) => onFontSizeChange(parseFloat(e.target.value) || 0)} className="font-size-input" step="0.5" />
         </div>
         <div className="control-group">
-          <span className="control-label">자간(px):</span>
+          <span className="control-label">{t('preview.letterSpacing')}:</span>
           <input type="number" value={letterSpacing} onChange={(e) => onLetterSpacingChange(parseFloat(e.target.value) || 0)} className="letter-spacing-input" step="0.1" />
         </div>
         <div className="control-group">
-          <span className="control-label">줄간격:</span>
+          <span className="control-label">{t('preview.lineHeight')}:</span>
           <input type="number" value={lineHeight} onChange={(e) => { const v = parseFloat(e.target.value); onLineHeightChange(v < 1 ? 1 : v || 1); }} className="line-height-input" step="0.1" min="1" />
         </div>
         <div className="control-group">
-          <span className="control-label">위/아래 여백(mm):</span>
+          <span className="control-label">{t('preview.pageMargin')}:</span>
           <input type="number" value={pageMarginV} onChange={(e) => onPageMarginVChange(parseFloat(e.target.value) || 0)} className="margin-input" step="1" />
         </div>
-        <button onClick={handlePrint} className="print-button">인쇄</button>
+        <button onClick={handlePrint} className="print-button">{t('button.print')}</button>
       </div>
       
       <div className="preview-container">
@@ -137,7 +140,7 @@ const Preview = ({
               <React.Fragment key={index}>
                 {index > 0 && (
                   <div className="manual-page-break-indicator">
-                    <span className="manual-page-break-text">강제 페이지 나눔</span>
+                    <span className="manual-page-break-text">{t('preview.manualPageBreak')}</span>
                   </div>
                 )}
                 <CodeBlock 

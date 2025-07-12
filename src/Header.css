@@ -1,0 +1,27 @@
+.app-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 */
+}
+
+.header-content {
+  text-align: center;
+}
+
+.site-title {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+  font-weight: 600;
+}
+
+.site-tagline {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #666;
+}
