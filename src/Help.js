@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import './PrivacyPolicy.css'; // 스타일 재사용
 
 function Help({ onNavigate }) {
@@ -7,6 +8,10 @@ function Help({ onNavigate }) {
 
   return (
     <div className="privacy-policy-container">
+      <Helmet>
+        <title>{`${t('help.title')} - 소스 코드 프린터`}</title>
+        <meta name="description" content={t('help.metaDescription')} />
+      </Helmet>
       <button onClick={() => onNavigate('app')} className="back-button">
         {t('help.backToApp')}
       </button>

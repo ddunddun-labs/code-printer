@@ -1,56 +1,58 @@
 import React from 'react';
+import { useTranslation, Trans } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import './PrivacyPolicy.css';
 
 function PrivacyPolicy({ onNavigate }) {
+  const { t } = useTranslation();
+
   return (
     <div className="privacy-policy-container">
+      <Helmet>
+        <title>{`${t('privacyPolicy.title')} - ${t('header.siteTitle')}`}</title>
+        <meta name="description" content={t('privacyPolicy.metaDescription')} />
+      </Helmet>
       <button onClick={() => onNavigate('app')} className="back-button">
-        &larr; 앱으로 돌아가기
+        &larr; {t('help.backToApp')}
       </button>
-      <h1>개인정보처리방침</h1>
-      <p><strong>최종 수정일: 2025년 7월 12일</strong></p>
+      <h1>{t('privacyPolicy.title')}</h1>
+      <p><strong>{t('privacyPolicy.lastUpdated')}: 2025년 7월 15일</strong></p>
 
-      <h2>1. 수집하는 개인정보의 항목</h2>
+      <h2>{t('privacyPolicy.section1.title')}</h2>
       <p>
-        본 서비스(code-printer)는 사용자의 편의성 향상과 서비스 품질 유지를 위해 다음과 같은 정보를 자동으로 수집할 수 있습니다.
+        {t('privacyPolicy.section1.p1')}
         <ul>
-          <li>쿠키(Cookie)</li>
-          <li>광고 식별자</li>
-          <li>IP 주소, 브라우저 유형, 기기 정보 등 서비스 이용 기록</li>
+          <li>{t('privacyPolicy.section1.item1')}</li>
+          <li>{t('privacyPolicy.section1.item2')}</li>
+          <li>{t('privacyPolicy.section1.item3')}</li>
         </ul>
-        이 정보는 개인을 특정하지 않는 비식별 정보입니다.
+        {t('privacyPolicy.section1.p2')}
       </p>
 
-      <h2>2. 개인정보의 수집 및 이용 목적</h2>
+      <h2>{t('privacyPolicy.section2.title')}</h2>
       <p>
-        본 서비스는 수집한 정보를 다음의 목적을 위해 활용합니다.
+        {t('privacyPolicy.section2.p1')}
         <ul>
-          <li>Google AdSense 등 제3자 광고 제공업체를 통한 맞춤형 광고 제공</li>
-          <li>서비스 이용 통계 분석 및 품질 개선</li>
-          <li>사용자 경험 최적화</li>
+          <li>{t('privacyPolicy.section2.item1')}</li>
+          <li>{t('privacyPolicy.section2.item2')}</li>
+          <li>{t('privacyPolicy.section2.item3')}</li>
         </ul>
       </p>
 
-      <h2>3. 쿠키(Cookie)에 의한 정보 수집</h2>
+      <h2>{t('privacyPolicy.section3.title')}</h2>
+      <p>{t('privacyPolicy.section3.p1')}</p>
+      <p>{t('privacyPolicy.section3.p2')}</p>
       <p>
-        본 서비스는 Google AdSense를 포함한 제3자 광고 제공업체가 쿠키를 사용하여 사용자의 웹사이트 방문 기록에 근거한 광고를 게재할 수 있습니다.
-      </p>
-      <p>
-        Google의 광고 쿠키를 사용하면 Google 및 파트너가 사용자의 사이트 및 다른 사이트 방문 기록을 토대로 맞춤 광고를 게재할 수 있습니다.
-      </p>
-      <p>
-        사용자는 <a href="https://adssettings.google.com/authenticated" target="_blank" rel="noopener noreferrer">Google 광고 설정</a> 페이지에서 맞춤 광고 게재를 중단할 수 있습니다. 또는 <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">www.aboutads.info/choices</a> 페이지를 방문하여 제3자 광고 제공업체의 맞춤 광고 쿠키 사용을 중단할 수 있습니다.
+        <Trans i18nKey="privacyPolicy.section3.p3">
+          Users may opt out of personalized advertising by visiting <a href="https://adssettings.google.com/authenticated" target="_blank" rel="noopener noreferrer">Google Ad Settings</a>. Alternatively, users can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">www.aboutads.info/choices</a>.
+        </Trans>
       </p>
 
-      <h2>4. 개인정보처리방침의 변경</h2>
-      <p>
-        법령 및 방침에 따른 변경 내용의 추가, 삭제 및 정정이 있는 경우에는 변경사항의 시행 7일 전부터 공지사항을 통하여 고지할 것입니다.
-      </p>
+      <h2>{t('privacyPolicy.section4.title')}</h2>
+      <p>{t('privacyPolicy.section4.p1')}</p>
 
-      <h2>5. 문의</h2>
-      <p>
-        개인정보 관련 문의는 푸터의 '개선 제안하기' 링크를 통해 이메일로 연락주시기 바랍니다.
-      </p>
+      <h2>{t('privacyPolicy.section5.title')}</h2>
+      <p>{t('privacyPolicy.section5.p1')}</p>
     </div>
   );
 }

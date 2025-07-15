@@ -15,7 +15,7 @@ function AppControls({
   return (
     <div className="app-controls-container">
       <div className="app-header-content">
-        <h1 className="site-title">{t('header.siteTitle')}</h1>
+        <h1 className="site-title" onClick={() => onNavigate('app')} style={{cursor: 'pointer'}}>{t('header.siteTitle')}</h1>
         <p className="site-tagline">{t('header.siteTagline')}</p>
       </div>
 
@@ -24,6 +24,9 @@ function AppControls({
           © 2025 code-printer. All Rights Reserved.
         </span>
         <div className="footer-links">
+          <button onClick={() => onNavigate('blog')} className="footer-link-button">
+            {t('footer.blog')}
+          </button>
           <button onClick={() => onNavigate('help')} className="footer-link-button">
             {t('footer.help')}
           </button>

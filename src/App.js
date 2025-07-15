@@ -1,28 +1,54 @@
 // React 라이브러리에서 필요한 기능들을 가져옵니다.
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next'; // useTranslation 훅 가져오기
-import { FaUndo, FaRedo } from 'react-icons/fa'; // 아이콘 가져오기
+import { FaUndo, FaRedo, FaChevronDown, FaChevronUp } from 'react-icons/fa'; // 아이콘 가져오기
+import { Helmet } from 'react-helmet-async';
+import ReactGA from 'react-ga4';
 
-// 컴포넌트들을 가져옵니다.
+// 컴포넌트들을 가져옵니다。
 import AppControls from './AppControls'; // AppControls 컴포넌트 가져오기
 import Preview from './Preview';
 import PrivacyPolicy from './PrivacyPolicy';
 import Help from './Help'; // Help 컴포넌트 가져오기
+import Blog from './Blog'; // Blog 컴포넌트 가져오기
 import AdComponent from './AdComponent';
 // App.css 스타일시트 파일을 가져옵니다.
 import './App.css';
 
 // 되돌리기 히스토리 최대 개수
 const MAX_HISTORY_SIZE = 50;
+// Google Analytics 측정 ID
+const GA_MEASUREMENT_ID = "G-1054HLTS1Q"; // <-- 여기에 실제 측정 ID를 입력하세요.
 
 // App이라는 이름의 함수형 컴포넌트를 정의합니다.
 function App() {
   const { t, i18n } = useTranslation(); // 다국어 지원 훅
 
+  // --- GA 이벤트 추적 함수 ---
+  const trackEvent = (category, action, label) => {
+    if (GA_MEASUREMENT_ID !== "YOUR_MEASUREMENT_ID") {
+      ReactGA.event({ category, action, label });
+    }
+  };
+
+  // Google Analytics 초기화
+  useEffect(() => {
+    if (GA_MEASUREMENT_ID !== "YOUR_MEASUREMENT_ID") {
+      ReactGA.initialize(GA_MEASUREMENT_ID);
+      // 초기 페이지뷰 전송
+      ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
+    }
+  }, []);
+
+
   // --- 상태 관리 (State) ---
-  const [view, setView] = useState('app'); // 'app', 'privacy', 'help'
+  const [view, setView] = useState('app'); // 'app', 'privacy', 'help', 'blog'
   const [editorState, setEditorState] = useState({
     current: `/**
+ * [Secure & Private]
+ * Your code is processed entirely in your browser.
+ * Nothing is ever sent to our servers.
+ * 
  * Welcome to Code Printer!
  * 
  * This tool helps you create beautiful, printable documents from your source code.
@@ -48,7 +74,7 @@ function Counter({ initialValue = 0 }) {
   };
 
   return (
-    <div className="counter-app" style={styles.counter}>
+    <div class="counter-app" style={styles.counter}>
       <h3>Counter</h3>
       <p style={styles.paragraph}>Current count: {count}</p>
       <button onClick={increment} style={styles.button}>Click me!</button>
@@ -130,7 +156,6 @@ export default App;
   const [fontSize, setFontSize] = useState(9.5);
   const [letterSpacing, setLetterSpacing] = useState(0);
   const [lineHeight, setLineHeight] = useState(1.5);
-  const [pageMarginV, setPageMarginV] = useState(20);
 
   const [showFindReplace, setShowFindReplace] = useState(false);
   const [findText, setFindText] = useState('');
@@ -139,7 +164,9 @@ export default App;
   const textareaRef = useRef(null);
   const debounceRef = useRef(null);
   const isTypingRef = useRef(false);
-  const PAGE_BREAK_MARKER = `\n%%%%%%%%%% PAGE_BREAK %%%%%%%%%%\n`;
+  const PAGE_BREAK_MARKER = `
+%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
+`;
   const PAGE_BREAK_MARKER_TEXT = '%%%%%%%%%% PAGE_BREAK %%%%%%%%%%';
 
   // --- 히스토리 관리 ---
@@ -186,6 +213,7 @@ export default App;
   };
 
   const handleInsertPageBreak = () => {
+    trackEvent('Editor', 'Click', 'Insert Page Break');
     if (!textareaRef.current) return;
     const textarea = textareaRef.current;
     const cursorPosition = textarea.selectionStart;
@@ -202,6 +230,7 @@ export default App;
   };
 
   const handleRemovePageBreak = () => {
+    trackEvent('Editor', 'Click', 'Remove Page Break');
     if (!textareaRef.current) return;
     const textarea = textareaRef.current;
     const cursorPosition = textarea.selectionStart;
@@ -252,42 +281,79 @@ export default App;
     }
   };
 
-  const handleFindNext = () => {
-    if (!textareaRef.current || !findText) return;
+  const findAndSelectNext = (startIndex = 0, code = editorState.current) => {
     const textarea = textareaRef.current;
-    const currentCode = textarea.value;
-    const startIndex = textarea.selectionEnd;
-    const nextIndex = currentCode.indexOf(findText, startIndex);
+    if (!textarea || !findText) return -1;
+
+    let nextIndex = code.indexOf(findText, startIndex);
+    if (nextIndex === -1 && startIndex > 0) {
+      nextIndex = code.indexOf(findText, 0);
+    }
+
     if (nextIndex !== -1) {
       textarea.focus();
       textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
+
+      const computedStyle = window.getComputedStyle(textarea);
+      const lineHeight = parseFloat(computedStyle.lineHeight);
+      const lines = code.substring(0, nextIndex).split('\n');
+      const lineCount = lines.length;
+      const scrollTop = (lineCount - 1) * lineHeight;
+
+      textarea.scrollTop = scrollTop - (textarea.clientHeight / 2);
+    }
+    return nextIndex;
+  };
+
+  const handleFindNext = () => {
+    trackEvent('Editor', 'Click', 'Find Next');
+    const foundIndex = findAndSelectNext(textareaRef.current?.selectionEnd || 0);
+    if (foundIndex === -1) {
+      alert(t('alert.noMatches'));
     }
   };
 
   const handleReplace = () => {
+    trackEvent('Editor', 'Click', 'Replace');
     if (!textareaRef.current || !findText) return;
+
     const textarea = textareaRef.current;
-    const { selectionStart, selectionEnd } = textarea;
-    const selectedText = textarea.value.substring(selectionStart, selectionEnd);
-    if (selectedText === findText) {
+    const { selectionStart } = textarea;
+    const textToSearch = editorState.current;
+
+    const foundIndex = textToSearch.indexOf(findText, selectionStart);
+
+    if (foundIndex !== -1) {
       const newCode = 
-        editorState.current.substring(0, selectionStart) +
+        textToSearch.substring(0, foundIndex) +
         replaceText +
-        editorState.current.substring(selectionEnd);
+        textToSearch.substring(foundIndex + findText.length);
+      
       updateCodeImmediately(newCode);
+
       setTimeout(() => {
-        const nextIndex = newCode.indexOf(findText, selectionStart + replaceText.length);
-        if (nextIndex !== -1) {
-          textarea.focus();
-          textarea.setSelectionRange(nextIndex, nextIndex + findText.length);
-        }
+        textarea.focus();
+        const newSelectionStart = foundIndex;
+        const newSelectionEnd = foundIndex + replaceText.length;
+        textarea.setSelectionRange(newSelectionStart, newSelectionEnd);
+
+        // 스크롤 조정
+        const computedStyle = window.getComputedStyle(textarea);
+        const lineHeight = parseFloat(computedStyle.lineHeight);
+        const lines = newCode.substring(0, newSelectionStart).split('\n');
+        const lineCount = lines.length;
+        const scrollTop = (lineCount - 1) * lineHeight;
+        textarea.scrollTop = scrollTop - (textarea.clientHeight / 2);
       }, 0);
+    } else {
+      alert(t('alert.noMatches'));
     }
   };
 
   const handleReplaceAll = () => {
+    trackEvent('Editor', 'Click', 'Replace All');
     if (!findText) return;
-    const escapedFindText = findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedFindText = findText.replace(/[.*+?^${}()|[\\]]/g, '\\$&');
     const regex = new RegExp(escapedFindText, 'g');
     const matches = editorState.current.match(regex);
     const count = matches ? matches.length : 0;
@@ -301,15 +367,16 @@ export default App;
     }
   };
 
-  const handleQuickReplace = (find, replace, messageKey, loop = false) => {
-    let newCode = editorState.current;
-    if (loop) {
-      while (newCode.includes(find)) {
-        newCode = newCode.replaceAll(find, replace);
-      }
+  const handleQuickReplace = (find, replace, messageKey, useRegex = false) => {
+    trackEvent('Editor', 'Click', `Quick Clean: ${messageKey}`);
+    let newCode;
+    if (useRegex) {
+      const regex = new RegExp(find, 'g');
+      newCode = editorState.current.replace(regex, replace);
     } else {
-      newCode = newCode.replaceAll(find, replace);
+      newCode = editorState.current.replaceAll(find, replace);
     }
+
     if (editorState.current !== newCode) {
       updateCodeImmediately(newCode);
       alert(t(messageKey));
@@ -317,8 +384,14 @@ export default App;
   };
 
   const handleRemoveFirstChar = () => {
+    trackEvent('Editor', 'Click', 'Quick Clean: Remove First Char');
     const lines = editorState.current.split('\n');
-    const newLines = lines.map(line => line.length > 0 ? line.substring(1) : line);
+    const newLines = lines.map(line => {
+      if (line.trim() === PAGE_BREAK_MARKER_TEXT) {
+        return line; // 페이지 나누기 마커는 변경하지 않음
+      }
+      return line.length > 0 ? line.substring(1) : line;
+    });
     const newCode = newLines.join('\n');
     if (editorState.current !== newCode) {
       updateCodeImmediately(newCode);
@@ -327,6 +400,7 @@ export default App;
   };
 
   const handleUndo = useCallback(() => {
+    trackEvent('Editor', 'Click', 'Undo');
     setEditorState(prevState => {
       if (prevState.history.length === 0) return prevState;
       const previousState = prevState.history[prevState.history.length - 1];
@@ -340,6 +414,7 @@ export default App;
   }, []);
 
   const handleRedo = useCallback(() => {
+    trackEvent('Editor', 'Click', 'Redo');
     setEditorState(prevState => {
       if (prevState.redoStack.length === 0) return prevState;
       const nextState = prevState.redoStack[0];
@@ -365,34 +440,44 @@ export default App;
   }, [handleUndo, handleRedo]);
 
   const changeLanguage = (lang) => {
+    trackEvent('Language', 'Change', lang);
     i18n.changeLanguage(lang);
+  };
+
+  const handleToggleFindReplace = () => {
+    setShowFindReplace(!showFindReplace);
+    trackEvent('Editor', 'Toggle', 'Find and Replace');
   };
 
   // --- 렌더링 (Rendering) ---
   const renderMainApp = () => (
     <div className="container">
+      <Helmet>
+        <title>소스 코드 프린터 - 코드를 깔끔하게 PDF로 변환</title>
+        <meta name="description" content="개발자를 위한 소스 코드 프린팅 및 PDF 변환 도구입니다. 다양한 언어의 구문 강조, 글꼴 및 여백 조절, 페이지 나누기 기능을 지원하여 최적의 인쇄 결과물을 만듭니다." />
+      </Helmet>
       <div className="editor-pane">
         <div className="editor-controls">
-          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="javascript">JavaScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="csharp">C#</option>
-            <option value="cpp">C++</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-            <option value="sql">SQL</option>
-            <option value="plaintext">Plain Text</option>
-          </select>
-          <button onClick={handleInsertPageBreak} className="control-button">{t('button.addPageBreak')}</button>
-          <button onClick={handleRemovePageBreak} className="control-button">{t('button.removePageBreak')}</button>
-          <button onClick={() => setShowFindReplace(!showFindReplace)} className="control-button">{t('button.findReplace')}</button>
-          <button onClick={handleUndo} disabled={editorState.history.length === 0} className="control-button icon-button">
-            <FaUndo />
-          </button>
-          <button onClick={handleRedo} disabled={editorState.redoStack.length === 0} className="control-button icon-button">
-            <FaRedo />
-          </button>
+          <div className="editor-controls-left">
+            <button onClick={handleToggleFindReplace} className="control-button">
+              {t('button.findReplace')} {showFindReplace ? <FaChevronUp /> : <FaChevronDown />} 
+            </button>
+
+            <div className="control-group">
+              <span className="control-label">{t('editor.pageBreakGroup')}</span>
+              <button onClick={handleInsertPageBreak} className="control-button">{t('button.insert')}</button>
+              <button onClick={handleRemovePageBreak} className="control-button">{t('button.delete')}</button>
+            </div>
+          </div>
+
+          <div className="control-group">
+            <button onClick={handleUndo} disabled={editorState.history.length === 0} className="control-button icon-button">
+              <FaUndo />
+            </button>
+            <button onClick={handleRedo} disabled={editorState.redoStack.length === 0} className="control-button icon-button">
+              <FaRedo />
+            </button>
+          </div>
         </div>
 
         {showFindReplace && (
@@ -429,7 +514,7 @@ export default App;
                 <button onClick={() => handleQuickReplace('\n\n', '\n', 'alert.quickClean.removeEmptyLines', true)}>
                   {t('quickClean.removeEmptyLines')}
                 </button>
-                <button onClick={() => handleQuickReplace('\n}', ' }', 'alert.quickClean.liftBrackets')}>
+                <button onClick={() => handleQuickReplace('\n\\s*\}', ' }', 'alert.quickClean.liftBrackets', true)}>
                   {t('quickClean.liftBrackets')}
                 </button>
                 <button onClick={handleRemoveFirstChar}>
@@ -446,22 +531,23 @@ export default App;
           onChange={handleCodeChange}
           onKeyDown={handleKeyDown}
           spellCheck="false"
+          data-testid="code-editor" // 테스트를 위한 ID 추가
         />
       </div>
 
       <Preview 
         code={editorState.current}
         language={language} 
+        onLanguageChange={(lang) => { setLanguage(lang); trackEvent('Preview', 'Change', `Language: ${lang}`); }}
         fontFamily={fontFamily}
-        onFontFamilyChange={setFontFamily}
+        onFontFamilyChange={(font) => { setFontFamily(font); trackEvent('Preview', 'Change', `Font Family: ${font}`); }}
         fontSize={fontSize}
-        onFontSizeChange={setFontSize}
+        onFontSizeChange={(size) => { setFontSize(size); trackEvent('Preview', 'Change', `Font Size: ${size}`); }}
         letterSpacing={letterSpacing}
-        onLetterSpacingChange={setLetterSpacing}
+        onLetterSpacingChange={(spacing) => { setLetterSpacing(spacing); trackEvent('Preview', 'Change', `Letter Spacing: ${spacing}`); }}
         lineHeight={lineHeight}
-        onLineHeightChange={setLineHeight}
-        pageMarginV={pageMarginV}
-        onPageMarginVChange={setPageMarginV}
+        onLineHeightChange={(height) => { setLineHeight(height); trackEvent('Preview', 'Change', `Line Height: ${height}`); }}
+        trackEvent={trackEvent} // 인쇄 이벤트 추적을 위해 전달
       />
     </div>
   );
@@ -472,6 +558,8 @@ export default App;
         return <PrivacyPolicy onNavigate={setView} />;
       case 'help':
         return <Help onNavigate={setView} />;
+      case 'blog':
+        return <Blog onNavigate={setView} />;
       default:
         return renderMainApp();
     }
@@ -479,7 +567,7 @@ export default App;
 
   return (
     <div className="App">
-      <AppControls onNavigate={setView} changeLanguage={changeLanguage} /> {/* AppControls 컴포넌트 사용 */}
+      <AppControls onNavigate={setView} changeLanguage={changeLanguage} />
       {renderContent()}
       {view === 'app' && <AdComponent className="ad-component" />}
     </div>

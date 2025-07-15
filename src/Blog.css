@@ -1,0 +1,43 @@
+.blog-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    line-height: 1.7;
+    color: #333;
+}
+
+.blog-post h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.blog-post .post-meta {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}
+
+.blog-post h2 {
+    font-size: 1.8rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ecf0f1;
+    color: #34495e;
+}
+
+.blog-post p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.blog-post code {
+    background-color: #ecf0f1;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'D2Coding', 'Fira Code', 'Consolas', monospace;
+}
