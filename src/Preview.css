@@ -1,60 +1,94 @@
-/* 미리보기 상단 컨트롤 바 스타일 (변경 없음) */
+/* 미리보기 상단 컨트롤 바 스타일 */
+.preview-pane {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 40px);
+}
+
 .preview-controls {
-  padding: 10px 15px;
+  padding: 5px 10px; /* 상하 여백 축소 */
   background-color: #ffffff;
   border-bottom: 1px solid #d1d5da;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px; /* 간격 조정 */
   flex-wrap: wrap;
   flex-shrink: 0;
+  min-height: 32px; /* 최소 높이 축소 */
+  box-sizing: border-box;
 }
-.control-group { display: flex; align-items: center; gap: 8px; }
-.control-label { font-size: 14px; color: #586069; white-space: nowrap; }
-.font-size-input, .line-height-input, .letter-spacing-input, .margin-input { width: 45px; /* 55px에서 45px로 수정 */ padding: 8px; border-radius: 6px; border: 1px solid #d1d5da; font-size: 14px; text-align: center; }
-.font-family-select { padding: 8px 12px; border-radius: 6px; border: 1px solid #d1d5da; font-size: 14px; background-color: #ffffff; }
-.print-button { margin-left: auto; padding: 8px 16px; border-radius: 6px; border: none; font-size: 14px; font-weight: 600; background-color: #2ea44f; color: white; cursor: pointer; transition: background-color 0.2s; }
+.control-group { display: flex; align-items: center; gap: 6px; }
+.control-label { font-size: 13px; color: #586069; white-space: nowrap; }
+.font-size-input, .line-height-input, .letter-spacing-input, .margin-input { width: 40px; padding: 4px; border-radius: 4px; border: 1px solid #d1d5da; font-size: 13px; text-align: center; }
+.font-family-select { padding: 4px 8px; border-radius: 4px; border: 1px solid #d1d5da; font-size: 13px; background-color: #ffffff; }
+.print-button { margin-left: auto; padding: 4px 12px; border-radius: 4px; border: none; font-size: 13px; font-weight: 600; background-color: #2ea44f; color: white; cursor: pointer; transition: background-color 0.2s; }
 .print-button:hover { background-color: #2c974b; }
+
+/* [추가] 미리보기 설정 패널 스타일 */
+.preview-panel {
+  padding: 8px 10px; /* 여백 축소 */
+  border-bottom: 1px solid #d1d5da;
+  background-color: #f6f8fa;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* [추가] 컨트롤 버튼 내부 아이콘 정렬 */
+.preview-controls .control-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
 
 /* --- 화면 표시용 스타일 --- */
 
 .preview-container {
   flex-grow: 1;
   overflow-y: auto;
-  background-color: #f0f2f5;
+  background-color: #e0e0e0; /* 배경색 변경 */
   padding: 20px;
+  box-sizing: border-box;
+}
+
+.page-wrapper {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  padding-bottom: 20px; /* 페이지 간격 */
 }
 
 .content-layer {
   width: 210mm;
-  min-height: 297mm; 
-  padding: 0 15mm;
+  height: 297mm; 
   box-sizing: border-box;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   color: #000;
-  position: relative; 
+  overflow: hidden; /* 페이지 내용이 넘치지 않도록 */
 }
 
 .content-layer pre {
   margin: 0;
   width: 100%;
-  /* [추가] pre 태그가 자식(code-block)의 높이를 올바르게 포함하도록 합니다. */
+  height: 100%;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .content-layer code {
   white-space: pre-wrap;
   word-break: break-all;
+  flex-grow: 1;
 }
 
-/* [추가] 강제 페이지 나눔 표시자 스타일 */
 .manual-page-break-indicator {
-  border-top: 2px solid #007bff; /* 파란색 실선 */
+  border-top: 2px solid #007bff;
   margin: 20px 0;
   text-align: center;
   position: relative;
@@ -66,53 +100,49 @@
   font-size: 12px;
   font-weight: bold;
   position: relative;
-  top: -12px; /* 선의 중간에 걸치도록 */
+  top: -12px;
 }
-
-/* [추가] 개별 코드 블록 스타일 */
-.code-block {
-  position: relative; /* 자동 페이지 나누기 점선의 기준점 */
-}
-
-/* [이름 변경 및 수정] 자동 페이지 나누기 점선 스타일 */
-.auto-page-break-line {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  border-top: 1px dashed rgba(255, 0, 0, 0.7); /* 빨간 점선 */
-  z-index: 10;
-}
-
 
 /* --- 인쇄 전용 스타일 --- */
 @media print {
   @page {
     size: A4;
-    margin: 20mm 15mm;
+    margin: 0 !important; /* 브라우저 여백 강제 제거 */
   }
 
-  .editor-pane, .preview-controls, .auto-page-break-line, .manual-page-break-indicator {
-    display: none;
+  body, html {
+    background-color: #fff;
+  }
+
+  .preview-pane {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .preview-controls, .preview-panel {
+    display: none !important;
+  }
+
+  .preview-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #fff !important;
+    overflow: visible !important;
+  }
+
+  .page-wrapper {
+    padding: 0;
+    margin: 0;
+    page-break-after: always; /* 각 페이지 래퍼 다음에 페이지 나누기 */
   }
 
   .content-layer {
-    display: block;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    padding: 0 !important;
-    margin: 0;
-    background: none;
+    width: 210mm;
+    height: 297mm;
     box-shadow: none;
-  }
-  
-  pre, code {
-    margin-top: 0; /* 명시적으로 상단 마진 제거 */
-    page-break-inside: avoid;
-  }
-
-  /* [추가] 실제 인쇄 시 강제 페이지 나눔을 적용합니다. */
-  .code-block:not(:first-child) {
-    page-break-before: always;
+    border: none;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 }

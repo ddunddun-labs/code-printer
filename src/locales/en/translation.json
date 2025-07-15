@@ -1,7 +1,7 @@
 {
   "button": {
-    "addPageBreak": "Add Page Break",
-    "removePageBreak": "Remove Break",
+    "insert": "Insert",
+    "delete": "Delete",
     "findReplace": "Find/Replace",
     "undo": "Undo",
     "redo": "Redo",
@@ -9,6 +9,9 @@
     "replace": "Replace",
     "replaceAll": "Replace All",
     "print": "Print"
+  },
+  "editor": {
+    "pageBreakGroup": "Page Break:"
   },
   "findReplace": {
     "findLabel": "Find what",
@@ -22,12 +25,14 @@
   },
   "footer": {
     "help": "Help",
+    "blog": "Blog",
     "privacyPolicy": "Privacy Policy",
     "suggestImprovements": "Contact & Suggestions"
   },
   "help": {
     "backToApp": "Back to App",
     "title": "Help",
+    "metaDescription": "Learn how to use Code Printer. Guides on features like page breaks, margin controls, find and replace, and more.",
     "about": {
       "title": "About This Service",
       "p1": "Code Printer is a web application designed to help developers print or convert source code into clean, well-formatted PDF documents.",
@@ -63,6 +68,10 @@
       "p1": "You can undo (Ctrl+Z) or redo (Ctrl+Y) up to the last 50 actions."
     }
   },
+  "about": {
+    "title": "About Code Printer",
+    "metaDescription": "Learn about the mission and features of the Code Printer project. See how we're dedicated to providing the best code printing experience for developers."
+  },
   "alert": {
     "noMoreMatches": "No more matches found.",
     "replaceAllCount": "Replaced {{count}} items.",
@@ -75,15 +84,82 @@
     }
   },
   "preview": {
+    "styleGroup": "Style",
+    "paperGroup": "Paper",
+    "language": "Language",
     "font": "Font",
     "fontSize": "Font Size (pt)",
     "letterSpacing": "Letter Spacing (px)",
     "lineHeight": "Line Height",
     "pageMargin": "Top/Bottom Margin (mm)",
-    "manualPageBreak": "Manual Page Break"
+    "manualPageBreak": "Manual Page Break",
+    "marginPreset": "Margin Preset",
+    "marginDefault": "Default",
+    "marginNone": "None",
+    "marginMinimum": "Minimum",
+    "marginCustom": "Custom",
+    "marginTop": "Top (mm)",
+    "marginBottom": "Bottom (mm)",
+    "marginLeft": "Left (mm)",
+    "marginRight": "Right (mm)",
+    "printInstruction": "For the best results, please set the margins to 'None' or '0' in your browser's print dialog."
   },
   "header": {
     "siteTitle": "Code Printer",
-    "siteTagline": "Print your source code cleanly with one click."
+    "siteTagline": "Print your source code cleanly, efficiently, and securely."
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "metaDescription": "Read the Privacy Policy for Code Printer. Learn about the information we collect, its purpose, and our cookie policy when you use our service.",
+    "lastUpdated": "Last Updated",
+    "section1": {
+      "title": "1. Information We Collect",
+      "p1": "This service (code-printer) may automatically collect the following information to improve user convenience and maintain service quality:",
+      "item1": "Cookies",
+      "item2": "Advertising Identifiers",
+      "item3": "Service usage records such as IP address, browser type, and device information",
+      "p2": "This information is non-identifying and does not specify an individual."
+    },
+    "section2": {
+      "title": "2. Purpose of Collection and Use of Personal Information",
+      "p1": "This service uses the collected information for the following purposes:",
+      "item1": "Providing personalized ads through third-party ad providers like Google AdSense",
+      "item2": "Analyzing service usage statistics and improving quality",
+      "item3": "Optimizing user experience"
+    },
+    "section3": {
+      "title": "3. Information Collection by Cookies",
+      "p1": "This service may allow third-party ad providers, including Google AdSense, to use cookies to serve ads based on a user's prior visits to your website or other websites.",
+      "p2": "Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.",
+      "p3": "Users may opt out of personalized advertising by visiting <1>Google Ad Settings</1>. Alternatively, users can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <3>www.aboutads.info/choices</3>."
+    },
+    "section4": {
+      "title": "4. Changes to the Privacy Policy",
+      "p1": "Any additions, deletions, or corrections to the policy due to changes in laws and regulations will be notified through an announcement at least 7 days before the changes take effect."
+    },
+    "section5": {
+      "title": "5. Contact",
+      "p1": "For inquiries regarding personal information, please contact us through the 'Contact & Suggestions' link in the footer."
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "metaDescription": "Find useful tips and information on development, coding, and how to use Code Printer.",
+    "post1": {
+      "title": "5 Tips for Clean Code Output",
+      "date": "July 15, 2025",
+      "p1": "When converting source code to PDF or printing it, readability is crucial. Whether it's for a code review with colleagues, a school assignment, or personal archiving, well-organized code is easier to understand and looks more professional. Here are five tips to improve your code output quality with our Code Printer.",
+      "h2_1": "1. Choose the Right Font",
+      "p2": "It is recommended to use a monospaced font designed for coding. Fonts like D2Coding, Fira Code, and Consolas ensure that characters occupy the same width, maintaining perfect code alignment. They also clearly distinguish between the number '0' and the letter 'O', and the number '1' and the letter 'l', reducing potential confusion.",
+      "h2_2": "2. Utilize Syntax Highlighting",
+      "p3": "Syntax highlighting is a great help in visually grasping the structure of your code. When variables, functions, and reserved words are displayed in different colors, you can follow the flow of the code quickly. Our Code Printer supports syntax highlighting for various programming languages, so it's automatically applied when you paste your code.",
+      "h2_3": "3. The Aesthetics of Margins",
+      "p4": "Proper margins are a key design element that makes content comfortable to view. Setting sufficient margins around your code block eliminates a cramped feeling and improves readability. Adjust the top, bottom, left, and right margins in the print settings to find the optimal layout.",
+      "h2_4": "4. Control Page Breaks",
+      "p5": "You wouldn’t want an important function or class to be cut off in the middle of a page. With our service's 'PAGE_BREAK' feature, you can manually break the page wherever you want. This allows you to group code into logical units, enhancing the completeness of the output.",
+      "h2_5": "5. Clean Up Unnecessary Code",
+      "p6": "Before printing, it’s a good idea to clean up things like `console.log` statements for debugging or unused comments. Keep only the most essential and important code in the final output to create a clean and tidy result.",
+      "p7": "Use these tips to make your source code shine! Our Code Printer will always be there to help you create the best possible output."
+    }
   }
 }

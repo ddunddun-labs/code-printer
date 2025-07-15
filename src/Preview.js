@@ -1,157 +1,228 @@
 // React와 관련 Hook들을 가져옵니다.
-import React, { useMemo, useState, useLayoutEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next'; // useTranslation 훅 가져오기
-// 코드 하이라이팅을 위한 highlight.js 라이브러리를 가져옵니다.
+import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import hljs from 'highlight.js';
-// highlight.js의 'github' 테마 스타일시트를 가져옵니다.
 import 'highlight.js/styles/github.css';
-// 이 컴포넌트 전용 스타일시트인 Preview.css를 가져옵니다.
 import './Preview.css';
 
-// [수정] 페이지 나누기 표시자를 App.js와 동일하게 변경합니다.
-const PAGE_BREAK_MARKER = `
-%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
-`;
+// A4 크기 (mm)
+const A4_WIDTH_MM = 210;
+const A4_HEIGHT_MM = 297;
 
-/**
- * 개별 코드 블록(페이지)을 렌더링하는 하위 컴포넌트
- */
-const CodeBlock = ({ html, style, pageMarginV }) => {
-  const contentRef = useRef(null);
-  const [pageBreaks, setPageBreaks] = useState([]);
-  const [ptInPx, setPtInPx] = useState(0);
-
-  const [prevHtml, setPrevHtml] = useState(html);
-  if (html !== prevHtml) {
-    setPageBreaks([]);
-    setPrevHtml(html);
-  }
-
-  useLayoutEffect(() => {
-    if (ptInPx === 0) {
-      const measurePtDiv = document.createElement('div');
-      measurePtDiv.style.height = '10pt';
-      measurePtDiv.style.visibility = 'hidden';
-      document.body.appendChild(measurePtDiv);
-      setPtInPx(measurePtDiv.offsetHeight / 10);
-      document.body.removeChild(measurePtDiv);
-      return;
-    }
-
-    if (contentRef.current) {
-      const currentContentHeight = contentRef.current.scrollHeight;
-      const mmToPx = (ptInPx / (1/72 * 25.4)); 
-      const printableHeightPx = (297 - pageMarginV - pageMarginV) * mmToPx;
-
-      if (printableHeightPx > 0) {
-        const breakCount = Math.floor(currentContentHeight / printableHeightPx);
-        const newBreaks = [];
-        for (let i = 1; i <= breakCount; i++) {
-          newBreaks.push(i * printableHeightPx);
-        }
-        setPageBreaks(newBreaks);
-      }
-    }
-  }, [html, style, pageMarginV, ptInPx]);
-
-  return (
-    <div className="code-block" ref={contentRef}>
-      <code style={style} dangerouslySetInnerHTML={{ __html: html }} />
-      {pageBreaks.map((top, i) => (
-        <div key={i} className="auto-page-break-line" style={{ top: `${top}px` }} />
-      ))}
-    </div>
-  );
+// mm를 px로 변환하는 헬퍼 함수
+const mmToPx = (mm) => {
+  const dpi = 96; // 일반적인 화면 DPI
+  return (mm * dpi) / 25.4;
 };
 
-
-// Preview 컴포넌트를 정의합니다.
 const Preview = ({
   code,
-  language,
+  language, onLanguageChange,
   fontFamily, onFontFamilyChange,
   fontSize, onFontSizeChange,
   letterSpacing, onLetterSpacingChange,
   lineHeight, onLineHeightChange,
-  pageMarginV, onPageMarginVChange
+  trackEvent
 }) => {
-  const { t } = useTranslation(); // useTranslation 훅 사용
+  const { t } = useTranslation();
+  const [activePanel, setActivePanel] = useState('none');
+  const [marginOption, setMarginOption] = useState('default');
+  const [customMargins, setCustomMargins] = useState({ top: 20, bottom: 20, left: 15, right: 15 });
+  
+  const lineRef = useRef(null);
+  const [lineHeightPx, setLineHeightPx] = useState(0);
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const codeChunks = useMemo(() => {
-    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
-    const chunks = code.split(PAGE_BREAK_MARKER);
-    return chunks.map(chunk => hljs.highlight(chunk, { language: validLanguage, ignoreIllegals: true }).value);
-  }, [code, language]);
+  const margins = useMemo(() => {
+    switch (marginOption) {
+      case 'none': return { top: 0, bottom: 0, left: 0, right: 0 };
+      case 'minimum': return { top: 5, bottom: 5, left: 5, right: 5 };
+      case 'custom': return customMargins;
+      default: return { top: 20, bottom: 20, left: 15, right: 15 };
+    }
+  }, [marginOption, customMargins]);
 
   const codeStyle = useMemo(() => ({
     fontFamily: fontFamily,
     fontSize: `${fontSize}pt`,
     letterSpacing: `${letterSpacing}px`,
-    lineHeight: lineHeight 
-  }), [fontFamily, fontSize, letterSpacing, lineHeight]);
+    lineHeight: lineHeight,
+    padding: `${margins.top}mm ${margins.right}mm ${margins.bottom}mm ${margins.left}mm`,
+    boxSizing: 'border-box',
+  }), [fontFamily, fontSize, letterSpacing, lineHeight, margins]);
+
+  // 한 줄의 실제 높이(px)를 측정합니다.
+  useEffect(() => {
+    if (lineRef.current) {
+      setLineHeightPx(lineRef.current.offsetHeight);
+    }
+  }, [codeStyle]); // 스타일이 바뀔 때마다 재측정
+
+  const pages = useMemo(() => {
+    if (!lineHeightPx) return [];
+
+    const printableHeightMm = A4_HEIGHT_MM - margins.top - margins.bottom;
+    const printableHeightPx = mmToPx(printableHeightMm);
+    const linesPerPage = Math.floor(printableHeightPx / lineHeightPx);
+
+    if (linesPerPage <= 0) return [];
+
+    const highlightedCode = hljs.highlight(code, { language: language, ignoreIllegals: true }).value;
+    const lines = highlightedCode.split('\n');
+    
+    const resultPages = [];
+    let currentPageLines = [];
+
+    const manualPageBreaks = /\n(%%%%%%%%%% PAGE_BREAK %%%%%%%%%%)\n/g;
+    const codeWithMarkers = code.replace(manualPageBreaks, '\n$1\n');
+    const sourceLines = codeWithMarkers.split('\n');
+
+    let lineCounter = 0;
+    for (let i = 0; i < sourceLines.length; i++) {
+      const sourceLine = sourceLines[i];
+      
+      if (sourceLine.includes('%%%%%%%%%% PAGE_BREAK %%%%%%%%%%')) {
+        if (currentPageLines.length > 0) {
+          resultPages.push(currentPageLines.join('\n'));
+          currentPageLines = [];
+        }
+        lineCounter = 0;
+        continue;
+      }
+
+      currentPageLines.push(lines[i] || ' '); // highlighted line
+      lineCounter++;
+
+      if (lineCounter >= linesPerPage && i < sourceLines.length - 1) {
+        resultPages.push(currentPageLines.join('\n'));
+        currentPageLines = [];
+        lineCounter = 0;
+      }
+    }
+
+    if (currentPageLines.length > 0) {
+      resultPages.push(currentPageLines.join('\n'));
+    }
+    
+    return resultPages;
+
+  }, [code, language, margins, lineHeightPx, fontSize, fontFamily, letterSpacing, lineHeight]);
 
 
-  // --- 렌더링 ---
+  const togglePanel = (panelName) => {
+    setActivePanel(current => (current === panelName ? 'none' : panelName));
+    trackEvent('Preview', 'Toggle Panel', panelName);
+  };
+
+  const handlePrint = () => {
+    trackEvent('Preview', 'Click', 'Print');
+    alert(t('preview.printInstruction'));
+    window.print();
+  };
+
   return (
     <div className="preview-pane">
+      {/* 한 줄 높이 측정을 위한 숨겨진 요소 */}
+      <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none' }}>
+        <pre ref={lineRef} style={{...codeStyle, padding: 0, margin: 0}}><span>A</span></pre>
+      </div>
+
       <div className="preview-controls">
         <div className="control-group">
-          <span className="control-label">{t('preview.font')}:</span>
-          <select value={fontFamily} onChange={(e) => onFontFamilyChange(e.target.value)} className="font-family-select">
-            <option value="D2Coding, Consolas, 'Courier New', monospace">D2Coding</option>
-            <option value="Consolas, 'Courier New', monospace">Consolas</option>
-            <option value="'Courier New', monospace">Courier New</option>
-            <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
+          <span className="control-label">{t('preview.language')}:</span>
+          <select value={language} onChange={(e) => onLanguageChange(e.target.value)} className="font-family-select">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="csharp">C#</option>
+            <option value="cpp">C++</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="sql">SQL</option>
+            <option value="plaintext">Plain Text</option>
           </select>
         </div>
-        <div className="control-group">
-          <span className="control-label">{t('preview.fontSize')}:</span>
-          <input type="number" value={fontSize} onChange={(e) => onFontSizeChange(parseFloat(e.target.value) || 0)} className="font-size-input" step="0.5" />
-        </div>
-        <div className="control-group">
-          <span className="control-label">{t('preview.letterSpacing')}:</span>
-          <input type="number" value={letterSpacing} onChange={(e) => onLetterSpacingChange(parseFloat(e.target.value) || 0)} className="letter-spacing-input" step="0.1" />
-        </div>
-        <div className="control-group">
-          <span className="control-label">{t('preview.lineHeight')}:</span>
-          <input type="number" value={lineHeight} onChange={(e) => { const v = parseFloat(e.target.value); onLineHeightChange(v < 1 ? 1 : v || 1); }} className="line-height-input" step="0.1" min="1" />
-        </div>
-        <div className="control-group">
-          <span className="control-label">{t('preview.pageMargin')}:</span>
-          <input type="number" value={pageMarginV} onChange={(e) => onPageMarginVChange(parseFloat(e.target.value) || 0)} className="margin-input" step="1" />
-        </div>
+        <button onClick={() => togglePanel('style')} className="control-button">
+          {t('preview.styleGroup')}
+          {activePanel === 'style' ? <FaChevronUp /> : <FaChevronDown />}
+        </button>
+        <button onClick={() => togglePanel('paper')} className="control-button">
+          {t('preview.paperGroup')}
+          {activePanel === 'paper' ? <FaChevronUp /> : <FaChevronDown />}
+        </button>
         <button onClick={handlePrint} className="print-button">{t('button.print')}</button>
       </div>
       
-      <div className="preview-container">
-        <div 
-          className="content-layer"
-          style={{
-            paddingTop: `${pageMarginV}mm`,
-            paddingBottom: `${pageMarginV}mm`
-          }}
-        >
-          <pre>
-            {codeChunks.map((chunkHtml, index) => (
-              <React.Fragment key={index}>
-                {index > 0 && (
-                  <div className="manual-page-break-indicator">
-                    <span className="manual-page-break-text">{t('preview.manualPageBreak')}</span>
-                  </div>
-                )}
-                <CodeBlock 
-                  html={chunkHtml} 
-                  style={codeStyle} 
-                  pageMarginV={pageMarginV} 
-                />
-              </React.Fragment>
-            ))}
-          </pre>
+      {activePanel === 'style' && (
+        <div className="preview-panel">
+          <div className="control-group">
+            <span className="control-label">{t('preview.font')}:</span>
+            <select value={fontFamily} onChange={(e) => onFontFamilyChange(e.target.value)} className="font-family-select">
+              <option value="D2Coding, Consolas, 'Courier New', monospace">D2Coding</option>
+              <option value="Consolas, 'Courier New', monospace">Consolas</option>
+              <option value="'Courier New', monospace">Courier New</option>
+              <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
+            </select>
+          </div>
+          <div className="control-group">
+            <span className="control-label">{t('preview.fontSize')}:</span>
+            <input type="number" value={fontSize} onChange={(e) => onFontSizeChange(parseFloat(e.target.value) || 0)} className="font-size-input" step="0.5" />
+          </div>
+          <div className="control-group">
+            <span className="control-label">{t('preview.letterSpacing')}:</span>
+            <input type="number" value={letterSpacing} onChange={(e) => onLetterSpacingChange(parseFloat(e.target.value) || 0)} className="letter-spacing-input" step="0.1" />
+          </div>
+          <div className="control-group">
+            <span className="control-label">{t('preview.lineHeight')}:</span>
+            <input type="number" value={lineHeight} onChange={(e) => { const v = parseFloat(e.target.value); onLineHeightChange(v < 1 ? 1 : v || 1); }} className="line-height-input" step="0.1" min="1" />
+          </div>
         </div>
+      )}
+
+      {activePanel === 'paper' && (
+        <div className="preview-panel">
+          <div className="control-group">
+            <span className="control-label">{t('preview.marginPreset')}:</span>
+            <select value={marginOption} onChange={(e) => setMarginOption(e.target.value)} className="font-family-select">
+              <option value="default">{t('preview.marginDefault')}</option>
+              <option value="none">{t('preview.marginNone')}</option>
+              <option value="minimum">{t('preview.marginMinimum')}</option>
+              <option value="custom">{t('preview.marginCustom')}</option>
+            </select>
+          </div>
+          {marginOption === 'custom' && (
+            <>
+              <div className="control-group">
+                <span className="control-label">{t('preview.marginTop')}:</span>
+                <input type="number" value={customMargins.top} onChange={(e) => setCustomMargins(m => ({...m, top: parseFloat(e.target.value) || 0}))} className="margin-input" />
+              </div>
+              <div className="control-group">
+                <span className="control-label">{t('preview.marginBottom')}:</span>
+                <input type="number" value={customMargins.bottom} onChange={(e) => setCustomMargins(m => ({...m, bottom: parseFloat(e.target.value) || 0}))} className="margin-input" />
+              </div>
+              <div className="control-group">
+                <span className="control-label">{t('preview.marginLeft')}:</span>
+                <input type="number" value={customMargins.left} onChange={(e) => setCustomMargins(m => ({...m, left: parseFloat(e.target.value) || 0}))} className="margin-input" />
+              </div>
+              <div className="control-group">
+                <span className="control-label">{t('preview.marginRight')}:</span>
+                <input type="number" value={customMargins.right} onChange={(e) => setCustomMargins(m => ({...m, right: parseFloat(e.target.value) || 0}))} className="margin-input" />
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      <div className="preview-container">
+        {pages.map((pageHtml, index) => (
+          <div key={index} className="page-wrapper">
+            <div className="content-layer">
+              <pre style={codeStyle}>
+                <code dangerouslySetInnerHTML={{ __html: pageHtml }} />
+              </pre>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
