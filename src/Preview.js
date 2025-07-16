@@ -164,7 +164,7 @@ const Preview = ({
     
     return resultPages;
 
-  }, [code, language, margins, lineHeightPx, avgCharWidth, numColumns, codeStyle]);
+  }, [code, language, margins, lineHeightPx, avgCharWidth, numColumns]);
 
 
   // 렌더링을 위해 페이지들을 다단에 맞게 그룹화합니다.

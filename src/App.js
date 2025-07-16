@@ -24,11 +24,11 @@ function App() {
   const { t, i18n } = useTranslation(); // 다국어 지원 훅
 
   // --- GA 이벤트 추적 함수 ---
-  const trackEvent = (category, action, label) => {
+  const trackEvent = useCallback((category, action, label) => {
     if (GA_MEASUREMENT_ID !== "YOUR_MEASUREMENT_ID") {
       ReactGA.event({ category, action, label });
     }
-  };
+  }, []);
 
   // Google Analytics 초기화
   useEffect(() => {
@@ -177,13 +177,13 @@ export default App;
     }, 500);
   };
   
-  const updateCodeImmediately = (newCode) => {
+  const updateCodeImmediately = useCallback((newCode) => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
     isTypingRef.current = false;
     pushStateToHistory(newCode.trim()); // trim() 추가
-  };
+  }, []);
 
   const handleInsertPageBreak = () => {
     trackEvent('Editor', 'Click', 'Insert Page Break');
@@ -326,7 +326,7 @@ export default App;
   const handleReplaceAll = () => {
     trackEvent('Editor', 'Click', 'Replace All');
     if (!findText) return;
-    const escapedFindText = findText.replace(/[.*+?^${}()|[\]]/g, '\\$&');
+    const escapedFindText = findText.replace(/[.*+?^${}()|[\\]]/g, '\$&');
     const regex = new RegExp(escapedFindText, 'g');
     const matches = editorState.current.match(regex);
     const count = matches ? matches.length : 0;
@@ -532,7 +532,7 @@ export default App;
                 <button onClick={() => handleQuickReplace('\n\n', '\n', 'alert.quickClean.removeEmptyLines', true)}>
                   {t('quickClean.removeEmptyLines')}
                 </button>
-                <button onClick={() => handleQuickReplace('\n\\s*\}', ' }', 'alert.quickClean.liftBrackets', true)}>
+                <button onClick={() => handleQuickReplace('\n\s*}', ' }', 'alert.quickClean.liftBrackets', true)}>
                   {t('quickClean.liftBrackets')}
                 </button>
                 <button onClick={handleRemoveFirstChar}>
