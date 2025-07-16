@@ -326,7 +326,7 @@ export default App;
   const handleReplaceAll = () => {
     trackEvent('Editor', 'Click', 'Replace All');
     if (!findText) return;
-    const escapedFindText = findText.replace(/[.*+?^${}()|[\]]/g, '\$&');
+    const escapedFindText = findText.replace(/[.*+?^${}()|[\]]/g, '$&');
     const regex = new RegExp(escapedFindText, 'g');
     const matches = editorState.current.match(regex);
     const count = matches ? matches.length : 0;
@@ -532,7 +532,7 @@ export default App;
                 <button onClick={() => handleQuickReplace('\n\n', '\n', 'alert.quickClean.removeEmptyLines', true)}>
                   {t('quickClean.removeEmptyLines')}
                 </button>
-                <button onClick={() => handleQuickReplace('\n *\}', ' }', 'alert.quickClean.liftBrackets', true)}>
+                <button onClick={() => handleQuickReplace('\n *}', ' }', 'alert.quickClean.liftBrackets', true)}>
                   {t('quickClean.liftBrackets')}
                 </button>
                 <button onClick={handleRemoveFirstChar}>
