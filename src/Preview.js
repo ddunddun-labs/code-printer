@@ -23,6 +23,7 @@ const Preview = ({
   fontSize, onFontSizeChange,
   letterSpacing, onLetterSpacingChange,
   lineHeight, onLineHeightChange,
+  numColumns, onNumColumnsChange, // 다단 관련 props 추가
   trackEvent
 }) => {
   const { t } = useTranslation();
@@ -31,7 +32,9 @@ const Preview = ({
   const [customMargins, setCustomMargins] = useState({ top: 20, bottom: 20, left: 15, right: 15 });
   
   const lineRef = useRef(null);
+  const charMeasurerRef = useRef(null);
   const [lineHeightPx, setLineHeightPx] = useState(0);
+  const [avgCharWidth, setAvgCharWidth] = useState(0);
 
   const margins = useMemo(() => {
     switch (marginOption) {
@@ -51,62 +54,122 @@ const Preview = ({
     boxSizing: 'border-box',
   }), [fontFamily, fontSize, letterSpacing, lineHeight, margins]);
 
-  // 한 줄의 실제 높이(px)를 측정합니다.
+  // 한 줄의 실제 높이(px)와 평균 문자 너비(px)를 측정합니다.
   useEffect(() => {
     if (lineRef.current) {
       setLineHeightPx(lineRef.current.offsetHeight);
     }
+    if (charMeasurerRef.current) {
+      // 다양한 문자를 포함하여 평균 너비를 더 정확하게 계산
+      const testString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;':,./<>?`~";
+      charMeasurerRef.current.textContent = testString;
+      const width = charMeasurerRef.current.offsetWidth;
+      setAvgCharWidth(width / testString.length);
+    }
   }, [codeStyle]); // 스타일이 바뀔 때마다 재측정
 
   const pages = useMemo(() => {
-    if (!lineHeightPx) return [];
+    // 측정값이 없으면 계산 중단
+    if (!lineHeightPx || !avgCharWidth) return [];
 
+    // 1. 계산에 필요한 변수 설정
     const printableHeightMm = A4_HEIGHT_MM - margins.top - margins.bottom;
     const printableHeightPx = mmToPx(printableHeightMm);
-    const linesPerPage = Math.floor(printableHeightPx / lineHeightPx);
+    const visualLinesPerPage = Math.floor(printableHeightPx / lineHeightPx);
 
-    if (linesPerPage <= 0) return [];
+    // 다단 수에 따라 실제 인쇄 가능한 너비 계산
+    const printableWidthMm = (A4_WIDTH_MM / numColumns) - margins.left - margins.right;
+    const printableWidthPx = mmToPx(printableWidthMm);
+    // 한 줄에 들어갈 수 있는 평균 글자 수
+    const charsPerLine = Math.floor(printableWidthPx / avgCharWidth);
 
-    const highlightedCode = hljs.highlight(code, { language: language, ignoreIllegals: true }).value;
-    const lines = highlightedCode.split('\n');
-    
+    if (visualLinesPerPage <= 0 || charsPerLine <= 0) return [];
+
+    // 2. 코드 하이라이팅 및 줄 단위 분리
+    const sourceCodeLines = code.split('\n');
+    const highlightedCodeLines = hljs.highlight(code, { language, ignoreIllegals: true }).value.split('\n');
+
+    // 3. 페이지 분할 로직
     const resultPages = [];
-    let currentPageLines = [];
+    let currentPageContent = [];
+    let currentVisualLineCount = 0;
 
-    const manualPageBreaks = /\n(%%%%%%%%%% PAGE_BREAK %%%%%%%%%%)\n/g;
-    const codeWithMarkers = code.replace(manualPageBreaks, '\n$1\n');
-    const sourceLines = codeWithMarkers.split('\n');
+    for (let i = 0; i < sourceCodeLines.length; i++) {
+      const sourceLine = sourceCodeLines[i];
+      const highlightedLine = highlightedCodeLines[i] || '&nbsp;'; // 빈 줄은 공백으로 처리
 
-    let lineCounter = 0;
-    for (let i = 0; i < sourceLines.length; i++) {
-      const sourceLine = sourceLines[i];
-      
-      if (sourceLine.includes('%%%%%%%%%% PAGE_BREAK %%%%%%%%%%')) {
-        if (currentPageLines.length > 0) {
-          resultPages.push(currentPageLines.join('\n'));
-          currentPageLines = [];
+      // 수동 페이지 나누기 처리
+      if (sourceLine.trim() === '%%%%%%%%%% PAGE_BREAK %%%%%%%%%%') {
+        if (currentPageContent.length > 0) {
+          resultPages.push(currentPageContent.join('\n'));
         }
-        lineCounter = 0;
+        resultPages.push('MANUAL_PAGE_BREAK');
+        currentPageContent = [];
+        currentVisualLineCount = 0;
         continue;
       }
 
-      currentPageLines.push(lines[i] || ' '); // highlighted line
-      lineCounter++;
+      // 현재 줄이 차지할 시각적 줄 수 계산 (자동 줄 바꿈 고려)
+      const wrappedLineCount = Math.max(1, Math.ceil(sourceLine.length / charsPerLine));
 
-      if (lineCounter >= linesPerPage && i < sourceLines.length - 1) {
-        resultPages.push(currentPageLines.join('\n'));
-        currentPageLines = [];
-        lineCounter = 0;
+      // 현재 페이지에 추가될 경우, 허용된 줄 수를 넘는지 확인
+      if (currentVisualLineCount + wrappedLineCount > visualLinesPerPage && currentPageContent.length > 0) {
+        resultPages.push(currentPageContent.join('\n'));
+        currentPageContent = [highlightedLine];
+        currentVisualLineCount = wrappedLineCount;
+      } else {
+        currentPageContent.push(highlightedLine);
+        currentVisualLineCount += wrappedLineCount;
       }
     }
 
-    if (currentPageLines.length > 0) {
-      resultPages.push(currentPageLines.join('\n'));
+    // 마지막 페이지에 남은 내용 추가
+    if (currentPageContent.length > 0) {
+      resultPages.push(currentPageContent.join('\n'));
     }
     
     return resultPages;
 
-  }, [code, language, margins, lineHeightPx, fontSize, fontFamily, letterSpacing, lineHeight]);
+  }, [code, language, margins, lineHeightPx, avgCharWidth, numColumns, codeStyle]);
+
+
+  // 렌더링을 위해 페이지들을 다단에 맞게 그룹화합니다.
+  const renderablePages = useMemo(() => {
+    const finalRenderablePages = [];
+    let pageBuffer = [];
+
+    const flushBuffer = () => {
+      if (pageBuffer.length === 0) return;
+      
+      if (numColumns === 1) {
+        pageBuffer.forEach(columnContent => {
+          finalRenderablePages.push({ isManualBreak: false, columns: [columnContent] });
+        });
+      } else { // 2단일 경우
+        // 현재 버퍼에 홀수 개의 단이 있다면, 짝을 맞추기 위해 빈 단을 추가
+        if (pageBuffer.length % 2 !== 0) {
+          pageBuffer.push('');
+        }
+        for (let i = 0; i < pageBuffer.length; i += 2) {
+          finalRenderablePages.push({ isManualBreak: false, columns: pageBuffer.slice(i, i + 2) });
+        }
+      }
+      pageBuffer = [];
+    };
+
+    pages.forEach(page => {
+      if (page === 'MANUAL_PAGE_BREAK') {
+        flushBuffer();
+        finalRenderablePages.push({ isManualBreak: true, columns: [] });
+      } else {
+        pageBuffer.push(page);
+      }
+    });
+    flushBuffer(); // 마지막 남은 버퍼 처리
+
+    return finalRenderablePages;
+
+  }, [pages, numColumns]);
 
 
   const togglePanel = (panelName) => {
@@ -122,9 +185,10 @@ const Preview = ({
 
   return (
     <div className="preview-pane">
-      {/* 한 줄 높이 측정을 위한 숨겨진 요소 */}
-      <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none' }}>
+      {/* 측정용 숨겨진 요소들 */}
+      <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
         <pre ref={lineRef} style={{...codeStyle, padding: 0, margin: 0}}><span>A</span></pre>
+        <span ref={charMeasurerRef} style={{...codeStyle, display: 'inline-block', height: 0, overflow: 'hidden'}}></span>
       </div>
 
       <div className="preview-controls">
@@ -182,6 +246,11 @@ const Preview = ({
       {activePanel === 'paper' && (
         <div className="preview-panel">
           <div className="control-group">
+            <span className="control-label">{t('preview.columns')}:</span>
+            <button onClick={() => onNumColumnsChange(1)} className={`column-button ${numColumns === 1 ? 'active' : ''}`}>{t('preview.oneColumn')}</button>
+            <button onClick={() => onNumColumnsChange(2)} className={`column-button ${numColumns === 2 ? 'active' : ''}`}>{t('preview.twoColumns')}</button>
+          </div>
+          <div className="control-group">
             <span className="control-label">{t('preview.marginPreset')}:</span>
             <select value={marginOption} onChange={(e) => setMarginOption(e.target.value)} className="font-family-select">
               <option value="default">{t('preview.marginDefault')}</option>
@@ -214,15 +283,25 @@ const Preview = ({
       )}
 
       <div className="preview-container">
-        {pages.map((pageHtml, index) => (
-          <div key={index} className="page-wrapper">
-            <div className="content-layer">
-              <pre style={codeStyle}>
-                <code dangerouslySetInnerHTML={{ __html: pageHtml }} />
-              </pre>
+        {renderablePages.map((pageGroup, index) => {
+          if (pageGroup.isManualBreak) {
+            // 수동 페이지 나눔은 시각적으로 구분만 해주고, 실제 인쇄 시에는 page-break-after에 의해 나뉨
+            return (
+              <div key={`break-${index}`} className="page-wrapper manual-page-break-wrapper" style={{ display: 'none' }}></div>
+            );
+          }
+          return (
+            <div key={index} className={`page-wrapper ${numColumns === 2 ? 'two-columns' : ''}`}>
+              {pageGroup.columns.map((pageHtml, subIndex) => (
+                <div key={subIndex} className="content-layer">
+                  <pre style={codeStyle}>
+                    <code dangerouslySetInnerHTML={{ __html: pageHtml }} />
+                  </pre>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

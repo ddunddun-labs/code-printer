@@ -25,7 +25,7 @@
 .print-button { margin-left: auto; padding: 4px 12px; border-radius: 4px; border: none; font-size: 13px; font-weight: 600; background-color: #2ea44f; color: white; cursor: pointer; transition: background-color 0.2s; }
 .print-button:hover { background-color: #2c974b; }
 
-/* [추가] 미리보기 설정 패널 스타일 */
+/* [추가] 미리보기 설정 패널 스타�� */
 .preview-panel {
   padding: 8px 10px; /* 여백 축소 */
   border-bottom: 1px solid #d1d5da;
@@ -45,6 +45,22 @@
   padding: 4px 8px;
 }
 
+/* 다단 선택 버튼 스타일 */
+.column-button {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #d1d5da;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.column-button.active {
+  background-color: #0366d6;
+  color: white;
+  border-color: #0366d6;
+}
+
 
 /* --- 화면 표시용 스타일 --- */
 
@@ -58,8 +74,16 @@
 
 .page-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* 다단 정렬을 위해 변경 */
   padding-bottom: 20px; /* 페이지 간격 */
+  width: 210mm; /* A4 가로 크기 고정 */
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+.page-wrapper > * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .content-layer {
@@ -71,6 +95,12 @@
   color: #000;
   overflow: hidden; /* 페이지 내용이 넘치지 않도록 */
 }
+
+/* 2단 레이아웃일 때 content-layer 너비 조정 */
+.page-wrapper.two-columns .content-layer {
+  width: 105mm; /* A4 가로 너비의 절반 */
+}
+
 
 .content-layer pre {
   margin: 0;
@@ -135,6 +165,15 @@
     padding: 0;
     margin: 0;
     page-break-after: always; /* 각 페이지 래퍼 다음에 페이지 나누기 */
+    display: flex;
+    justify-content: flex-start;
+    width: 210mm !important;
+  }
+
+  .page-wrapper > * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   .content-layer {
@@ -144,5 +183,9 @@
     border: none;
     overflow: hidden;
     box-sizing: border-box;
+  }
+
+  .page-wrapper.two-columns .content-layer {
+    width: 105mm; /* A4 가로 너비의 절반 */
   }
 }

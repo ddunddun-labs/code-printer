@@ -156,6 +156,7 @@ export default App;
   const [fontSize, setFontSize] = useState(9.5);
   const [letterSpacing, setLetterSpacing] = useState(0);
   const [lineHeight, setLineHeight] = useState(1.5);
+  const [numColumns, setNumColumns] = useState(1); // 다단 상태 추가
 
   const [showFindReplace, setShowFindReplace] = useState(false);
   const [findText, setFindText] = useState('');
@@ -353,7 +354,7 @@ export default App;
   const handleReplaceAll = () => {
     trackEvent('Editor', 'Click', 'Replace All');
     if (!findText) return;
-    const escapedFindText = findText.replace(/[.*+?^${}()|[\\]]/g, '\\$&');
+    const escapedFindText = findText.replace(/[.*+?^${}()|[\]]/g, '\\$&');
     const regex = new RegExp(escapedFindText, 'g');
     const matches = editorState.current.match(regex);
     const count = matches ? matches.length : 0;
@@ -547,6 +548,8 @@ export default App;
         onLetterSpacingChange={(spacing) => { setLetterSpacing(spacing); trackEvent('Preview', 'Change', `Letter Spacing: ${spacing}`); }}
         lineHeight={lineHeight}
         onLineHeightChange={(height) => { setLineHeight(height); trackEvent('Preview', 'Change', `Line Height: ${height}`); }}
+        numColumns={numColumns}
+        onNumColumnsChange={(cols) => { setNumColumns(cols); trackEvent('Preview', 'Change', `Columns: ${cols}`); }}
         trackEvent={trackEvent} // 인쇄 이벤트 추적을 위해 전달
       />
     </div>

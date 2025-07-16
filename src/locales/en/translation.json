@@ -102,7 +102,10 @@
     "marginBottom": "Bottom (mm)",
     "marginLeft": "Left (mm)",
     "marginRight": "Right (mm)",
-    "printInstruction": "For the best results, please set the margins to 'None' or '0' in your browser's print dialog."
+    "printInstruction": "For the best results, please set the margins to 'None' or '0' in your browser's print dialog.",
+    "columns": "Columns",
+    "oneColumn": "1 Column",
+    "twoColumns": "2 Columns"
   },
   "header": {
     "siteTitle": "Code Printer",
