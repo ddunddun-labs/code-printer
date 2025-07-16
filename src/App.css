@@ -1,7 +1,29 @@
 /* src/App.css */
+
+/* 전체 앱 래퍼 */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* 광고를 제외한 메인 콘텐츠 영역 */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 기본적으로는 스크롤 없음 */
+}
+
+/* 도움말, 개인정보처리방침 페이지에만 스크롤 적용 */
+.main-content.is-static-page {
+  overflow-y: auto;
+}
+
 .container {
   display: flex;
-  height: calc(100vh - 40px); /* AppControls 높이 제외 */
+  flex-grow: 1;
+  overflow: hidden; 
 }
 
 .editor-pane {
@@ -9,7 +31,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid #ccc;
-  height: calc(100vh - 40px); /* 높이 명시적으로 지정 */
+  overflow: hidden;
 }
 
 .editor-controls {
@@ -22,6 +44,7 @@
   flex-wrap: wrap;
   min-height: 32px; /* 최소 높이 축소 */
   box-sizing: border-box;
+  flex-shrink: 0; /* 컨트롤 높이가 줄어들지 않도록 */
 }
 
 .editor-controls-left {
@@ -72,6 +95,7 @@
   padding: 8px 15px; /* 여백 조정 */
   background-color: #f9f9f9;
   border-bottom: 1px solid #ccc;
+  flex-shrink: 0; /* 찾기/바꾸기 창 높이가 줄어들지 않도록 */
 }
 
 .find-replace-group {
@@ -146,14 +170,14 @@ textarea {
   overflow-y: auto;
 }
 
+/* 광고 컴포넌트 스타일 수정 */
 .ad-component {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  /* position: fixed 제거 */
   width: 100%;
-  z-index: 1000;
+  flex-shrink: 0; /* 광고 영역 높이가 줄어들지 않도록 */
+  /* z-index, bottom, left 제거 */
   background-color: #f8f9fa;
-  padding: 10px 0;
+  padding: 0; /* AdComponent 자체 패딩 사용 */
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
   text-align: center;
 }

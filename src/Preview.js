@@ -30,11 +30,45 @@ const Preview = ({
   const [activePanel, setActivePanel] = useState('none');
   const [marginOption, setMarginOption] = useState('default');
   const [customMargins, setCustomMargins] = useState({ top: 20, bottom: 20, left: 15, right: 15 });
+  const [showPrintInstruction, setShowPrintInstruction] = useState(false);
+  const [dontShowPrintInstructionAgain, setDontShowPrintInstructionAgain] = useState(false);
   
   const lineRef = useRef(null);
   const charMeasurerRef = useRef(null);
   const [lineHeightPx, setLineHeightPx] = useState(0);
   const [avgCharWidth, setAvgCharWidth] = useState(0);
+  const debounceTimer = useRef(null);
+
+  // --- 안정적인 Debouncing 로직 ---
+  const handleDebouncedChange = useCallback((setter, value, trackingLabel) => {
+    clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      setter(value);
+      trackEvent('Preview', 'Change (Debounced)', `${trackingLabel}: ${value}`);
+    }, 300); // 300ms 지연
+  }, [trackEvent]);
+
+  const handleFontSizeInputChange = useCallback((e) => {
+    const value = parseFloat(e.target.value) || 0;
+    // 입력 필드 자체는 즉시 업데이트되도록 하고, 실제 상태 업데이트는 디바운싱합니다.
+    e.target.value = value; 
+    handleDebouncedChange(onFontSizeChange, value, 'Font Size');
+  }, [handleDebouncedChange, onFontSizeChange]);
+
+  const handleLetterSpacingInputChange = useCallback((e) => {
+    const value = parseFloat(e.target.value) || 0;
+    e.target.value = value;
+    handleDebouncedChange(onLetterSpacingChange, value, 'Letter Spacing');
+  }, [handleDebouncedChange, onLetterSpacingChange]);
+
+  const handleLineHeightInputChange = useCallback((e) => {
+    const value = parseFloat(e.target.value) || 1;
+    const clampedValue = value < 1 ? 1 : value;
+    e.target.value = clampedValue;
+    handleDebouncedChange(onLineHeightChange, clampedValue, 'Line Height');
+  }, [handleDebouncedChange, onLineHeightChange]);
+  // --- Debouncing 로직 끝 ---
+
 
   const margins = useMemo(() => {
     switch (marginOption) {
@@ -179,12 +213,45 @@ const Preview = ({
 
   const handlePrint = () => {
     trackEvent('Preview', 'Click', 'Print');
-    alert(t('preview.printInstruction'));
+    const hideInstruction = sessionStorage.getItem('hidePrintInstruction');
+    if (hideInstruction) {
+      window.print();
+    } else {
+      setShowPrintInstruction(true);
+    }
+  };
+
+  const handlePrintConfirm = () => {
+    if (dontShowPrintInstructionAgain) {
+      sessionStorage.setItem('hidePrintInstruction', 'true');
+    }
+    setShowPrintInstruction(false);
     window.print();
   };
 
+  const handleInstructionCheckboxChange = (e) => {
+    setDontShowPrintInstructionAgain(e.target.checked);
+  };
+
+
   return (
     <div className="preview-pane">
+      {/* 인쇄 안내 모달 */}
+      {showPrintInstruction && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>{t('preview.printInstruction')}</p>
+            <div className="modal-actions">
+              <label>
+                <input type="checkbox" checked={dontShowPrintInstructionAgain} onChange={handleInstructionCheckboxChange} />
+                다시 보지 않기
+              </label>
+              <button onClick={handlePrintConfirm} className="modal-confirm-button">인쇄</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 측정용 숨겨진 요소들 */}
       <div style={{ position: 'absolute', visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
         <pre ref={lineRef} style={{...codeStyle, padding: 0, margin: 0}}><span>A</span></pre>
@@ -230,15 +297,15 @@ const Preview = ({
           </div>
           <div className="control-group">
             <span className="control-label">{t('preview.fontSize')}:</span>
-            <input type="number" value={fontSize} onChange={(e) => onFontSizeChange(parseFloat(e.target.value) || 0)} className="font-size-input" step="0.5" />
+            <input type="number" defaultValue={fontSize} onChange={handleFontSizeInputChange} className="font-size-input" step="0.5" />
           </div>
           <div className="control-group">
             <span className="control-label">{t('preview.letterSpacing')}:</span>
-            <input type="number" value={letterSpacing} onChange={(e) => onLetterSpacingChange(parseFloat(e.target.value) || 0)} className="letter-spacing-input" step="0.1" />
+            <input type="number" defaultValue={letterSpacing} onChange={handleLetterSpacingInputChange} className="letter-spacing-input" step="0.1" />
           </div>
           <div className="control-group">
             <span className="control-label">{t('preview.lineHeight')}:</span>
-            <input type="number" value={lineHeight} onChange={(e) => { const v = parseFloat(e.target.value); onLineHeightChange(v < 1 ? 1 : v || 1); }} className="line-height-input" step="0.1" min="1" />
+            <input type="number" defaultValue={lineHeight} onChange={handleLineHeightInputChange} className="line-height-input" step="0.1" min="1" />
           </div>
         </div>
       )}

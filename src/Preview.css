@@ -3,7 +3,9 @@
   width: 50%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 40px);
+  height: 100%; /* calc() 대신 부모 flex에 맞춰 조정 */
+  position: relative; /* For modal positioning */
+  overflow: hidden; /* 내부 스크롤을 위해 추가 */
 }
 
 .preview-controls {
@@ -25,7 +27,7 @@
 .print-button { margin-left: auto; padding: 4px 12px; border-radius: 4px; border: none; font-size: 13px; font-weight: 600; background-color: #2ea44f; color: white; cursor: pointer; transition: background-color 0.2s; }
 .print-button:hover { background-color: #2c974b; }
 
-/* [추가] 미리보기 설정 패널 스타�� */
+/* [추가] 미리보기 설정 패널 스타일 */
 .preview-panel {
   padding: 8px 10px; /* 여백 축소 */
   border-bottom: 1px solid #d1d5da;
@@ -34,6 +36,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 /* [추가] 컨트롤 버튼 내부 아이콘 정렬 */
@@ -133,6 +136,71 @@
   top: -12px;
 }
 
+/* --- 인쇄 안내 모달 스타일 --- */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal-content p {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-actions label {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.modal-actions input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.modal-confirm-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #2ea44f;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-confirm-button:hover {
+  background-color: #2c974b;
+}
+
+
 /* --- 인쇄 전용 스타일 --- */
 @media print {
   @page {
@@ -140,8 +208,10 @@
     margin: 0 !important; /* 브라우저 여백 강제 제거 */
   }
 
-  body, html {
+  body, html, .app-wrapper, .main-content {
     background-color: #fff;
+    overflow: visible !important; /* 모든 상위 컨테이너의 overflow 해제 */
+    height: auto !important;
   }
 
   .preview-pane {
@@ -150,7 +220,7 @@
     overflow: visible;
   }
 
-  .preview-controls, .preview-panel {
+  .preview-controls, .preview-panel, .modal-overlay {
     display: none !important;
   }
 
@@ -178,10 +248,9 @@
 
   .content-layer {
     width: 210mm;
-    height: 297mm;
+    /* height와 overflow 제거 */
     box-shadow: none;
     border: none;
-    overflow: hidden;
     box-sizing: border-box;
   }
 

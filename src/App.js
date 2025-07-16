@@ -10,7 +10,6 @@ import AppControls from './AppControls'; // AppControls 컴포넌트 가져오�
 import Preview from './Preview';
 import PrivacyPolicy from './PrivacyPolicy';
 import Help from './Help'; // Help 컴포넌트 가져오기
-import Blog from './Blog'; // Blog 컴포넌트 가져오기
 import AdComponent from './AdComponent';
 // App.css 스타일시트 파일을 가져옵니다.
 import './App.css';
@@ -42,10 +41,10 @@ function App() {
 
 
   // --- 상태 관리 (State) ---
-  const [view, setView] = useState('app'); // 'app', 'privacy', 'help', 'blog'
+  const [view, setView] = useState('app'); // 'app', 'privacy', 'help'
   const [editorState, setEditorState] = useState({
     current: `/**
- * [Secure & Private]
+ * [Drag & Drop a file here!]
  * Your code is processed entirely in your browser.
  * Nothing is ever sent to our servers.
  * 
@@ -53,8 +52,6 @@ function App() {
  * 
  * This tool helps you create beautiful, printable documents from your source code.
  * Use the controls on the right to customize the appearance of your code.
- * 
- * Let's see how it works with a simple React application.
  */
 
 import React, { useState } from 'react';
@@ -63,15 +60,8 @@ import React, { useState } from 'react';
 function Counter({ initialValue = 0 }) {
   const [count, setCount] = useState(initialValue);
 
-  // You can increment the count.
-  const increment = () => {
-    setCount(prevCount => prevCount + 1);
-  };
-
-  // Or reset it to its initial value.
-  const reset = () => {
-    setCount(initialValue);
-  };
+  const increment = () => setCount(prevCount => prevCount + 1);
+  const reset = () => setCount(initialValue);
 
   return (
     <div class="counter-app" style={styles.counter}>
@@ -86,11 +76,26 @@ function Counter({ initialValue = 0 }) {
 /**
  * [TIP] Automatic Page Break
  * 
- * If the code gets long enough, you will see a red dotted line.
- * This line indicates where an automatic page break will occur
- * on a standard A4 sheet.
+ * The preview shows where pages will break automatically
+ * based on A4 paper size and your style settings.
+ */
+
+%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
+
+/**
+ * [TIP] Manual Page Break
  * 
- * You can adjust font size, line height, and margins to control this.
+ * The marker above creates a manual page break.
+ * You can add or remove these using the buttons in the editor toolbar
+ * to control the page layout precisely.
+ */
+
+/**
+ * [TIP] Multi-Column Layout
+ * 
+ * You can switch between 1-column and 2-column layouts.
+ * Find this option in the 'Paper' settings panel on the right.
+ * The 2-column layout is great for saving space with long code.
  */
 
 // Main application component that uses the Counter.
@@ -105,45 +110,12 @@ function App() {
   );
 }
 
-// You can even include CSS-in-JS for styling.
 const styles = {
-  container: {
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-  },
-  counter: {
-    marginBottom: '15px',
-    padding: '10px',
-    border: '1px dashed #eee',
-  },
-  paragraph: {
-    color: '#0056b3', // A nice blue color
-    fontSize: '16px',
-  },
-  button: {
-    marginRight: '10px',
-    padding: '8px 12px',
-  }
+  container: { padding: '20px', border: '1px solid #ccc', borderRadius: '8px' },
+  counter: { marginBottom: '15px', padding: '10px', border: '1px dashed #eee' },
+  paragraph: { color: '#0056b3', fontSize: '16px' },
+  button: { marginRight: '10px', padding: '8px 12px' }
 };
-
-%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
-
-/**
- * [TIP] Manual Page Break
- * 
- * The line above is a special marker.
- * It creates a manual page break in the printout,
- * represented by a blue line in the preview.
- * 
- * You can add or remove page breaks using the buttons in the editor toolbar.
- * This is useful for organizing long code into multiple pages.
- */
-
-// More features to explore:
-// 1. Find & Replace: Use the panel to refactor code quickly.
-// 2. Quick Clean: Tidy up your code with one-click actions.
-// 3. Undo/Redo: Don't worry about mistakes (Ctrl+Z / Ctrl+Y).
 
 export default App;
 `,
@@ -450,6 +422,47 @@ export default App;
     trackEvent('Editor', 'Toggle', 'Find and Replace');
   };
 
+  // --- Drag and Drop 핸들러 ---
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      // 파일 확장자로 언어 추정 (간단한 버전)
+      const extension = file.name.split('.').pop().toLowerCase();
+      const langMap = {
+        'js': 'javascript', 'jsx': 'javascript',
+        'py': 'python',
+        'java': 'java',
+        'cs': 'csharp',
+        'cpp': 'cpp', 'h': 'cpp',
+        'html': 'html', 'htm': 'html',
+        'css': 'css',
+        'sql': 'sql',
+        'txt': 'plaintext'
+      };
+      if (langMap[extension]) {
+        setLanguage(langMap[extension]);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (readerEvent) => {
+        const content = readerEvent.target.result;
+        updateCodeImmediately(content);
+        trackEvent('Editor', 'Drop', `File: ${file.name}`);
+      };
+      reader.readAsText(file);
+    }
+  }, [updateCodeImmediately, trackEvent]);
+
+
   // --- 렌더링 (Rendering) ---
   const renderMainApp = () => (
     <div className="container">
@@ -457,7 +470,11 @@ export default App;
         <title>소스 코드 프린터 - 코드를 깔끔하게 PDF로 변환</title>
         <meta name="description" content="개발자를 위한 소스 코드 프린팅 및 PDF 변환 도구입니다. 다양한 언어의 구문 강조, 글꼴 및 여백 조절, 페이지 나누기 기능을 지원하여 최적의 인쇄 결과물을 만듭니다." />
       </Helmet>
-      <div className="editor-pane">
+      <div 
+        className="editor-pane"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
         <div className="editor-controls">
           <div className="editor-controls-left">
             <button onClick={handleToggleFindReplace} className="control-button">
@@ -561,18 +578,18 @@ export default App;
         return <PrivacyPolicy onNavigate={setView} />;
       case 'help':
         return <Help onNavigate={setView} />;
-      case 'blog':
-        return <Blog onNavigate={setView} />;
       default:
         return renderMainApp();
     }
   };
 
   return (
-    <div className="App">
-      <AppControls onNavigate={setView} changeLanguage={changeLanguage} />
-      {renderContent()}
-      {view === 'app' && <AdComponent className="ad-component" />}
+    <div className="app-wrapper">
+      <div className={`main-content ${view === 'help' || view === 'privacy' ? 'is-static-page' : ''}`}>
+        <AppControls onNavigate={setView} changeLanguage={changeLanguage} />
+        {renderContent()}
+      </div>
+      {view === 'app' && <AdComponent />}
     </div>
   );
 }

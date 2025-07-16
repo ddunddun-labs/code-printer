@@ -20,13 +20,7 @@ function AppControls({
       </div>
 
       <div className="app-footer-content">
-        <span className="footer-copyright">
-          © 2025 code-printer. All Rights Reserved.
-        </span>
         <div className="footer-links">
-          <button onClick={() => onNavigate('blog')} className="footer-link-button">
-            {t('footer.blog')}
-          </button>
           <button onClick={() => onNavigate('help')} className="footer-link-button">
             {t('footer.help')}
           </button>

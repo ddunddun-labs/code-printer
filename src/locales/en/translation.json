@@ -25,7 +25,6 @@
   },
   "footer": {
     "help": "Help",
-    "blog": "Blog",
     "privacyPolicy": "Privacy Policy",
     "suggestImprovements": "Contact & Suggestions"
   },
@@ -33,39 +32,88 @@
     "backToApp": "Back to App",
     "title": "Help",
     "metaDescription": "Learn how to use Code Printer. Guides on features like page breaks, margin controls, find and replace, and more.",
-    "about": {
-      "title": "About This Service",
-      "p1": "Code Printer is a web application designed to help developers print or convert source code into clean, well-formatted PDF documents.",
-      "p2": "It offers various features such as syntax highlighting, page breaking, real-time preview, and powerful editing tools to optimize your code output experience."
+    "gettingStarted": {
+      "title": "Getting Started: Your First Step with Code Printer",
+      "intro": "Code Printer is a tool designed to help developers print or convert source code into clean, well-formatted documents. All your code is processed entirely within your browser and is never sent to our servers, ensuring your data remains secure.",
+      "screenLayout": {
+        "title": "Screen Layout",
+        "editor": "Code Editor:",
+        "editorDesc": "The left pane. Paste or write your code here.",
+        "preview": "Live Preview:",
+        "previewDesc": "The right pane. It shows a real-time preview of how your code will be printed.",
+        "controls": "Control Panels:",
+        "controlsDesc": "Located at the top of each pane, these allow you to control various features."
+      },
+      "basicUsage": {
+        "title": "Basic Usage (3 Steps)",
+        "step1": "Paste your code into the left editor.",
+        "step2": "Use the control panel above the right preview to adjust the style (font, size, margins, etc.) to your liking.",
+        "step3": "Click the 'Print' button to save as a PDF or send it to your printer."
+      }
     },
-    "editor": {
-      "title": "Code Editor",
-      "p1": "You can paste or write your source code here. The code will be automatically syntax-highlighted."
+    "features": {
+      "title": "Mastering the Core Features",
+      "editor": {
+        "title": "Using the Code Editor",
+        "highlighting": "Syntax Highlighting:",
+        "highlightingDesc": "Supports various programming languages and automatically detects the language to make your code visually appealing.",
+        "findReplace": "Find & Replace (Ctrl+F):",
+        "findReplaceDesc": "Beyond simple text search, it supports multi-line search and replace using the newline character (\n), which is useful for refactoring.",
+        "quickClean": "Quick Clean:",
+        "quickCleanDesc": "Handle common code cleanup tasks like 'Remove Consecutive Empty Lines' or 'Lift Closing Brackets' with a single click.",
+        "undoRedo": "Undo/Redo (Ctrl+Z/Y):",
+        "undoRedoDesc": "Don't be afraid of making mistakes. You can revert to a previous state at any time, as it remembers up to 50 of your past actions."
+      },
+      "preview": {
+        "title": "Perfecting the Live Preview",
+        "style": {
+          "title": "Style Settings:",
+          "font": "Using a monospaced font designed for coding (like D2Coding, Consolas) prevents code alignment issues and improves readability.",
+          "size": "Adjust the font size, letter spacing, and line height to create the most readable format. Code that is too dense is hard to understand."
+        },
+        "paper": {
+          "title": "Paper Settings:",
+          "columns": "1-column is a standard document format, while 2-column is useful when you have a large amount of code or want to create a two-column layout like in a research paper.",
+          "margins": "We provide 'Default', 'None', and 'Minimum' presets, and you can precisely adjust margins in mm with the custom option."
+        }
+      },
+      "pageBreak": {
+        "title": "Page Break System",
+        "auto": "Automatic Page Break:",
+        "autoDesc": "The preview shows where pages will automatically break based on A4 paper size and your current style settings.",
+        "manual": "Manual Page Break:",
+        "manualDesc": "Use the 'Page Break' button in the editor to force a page break wherever you want. This prevents important functions or classes from being split across pages and helps you group code into logical units to enhance the final output."
+      }
     },
-    "preview": {
-      "title": "Live Preview",
-      "p1": "The code entered in the editor is displayed in real-time as it will be printed. Adjust various options like font, size, and margins to create your desired output."
+    "printing": {
+      "title": "Printing and PDF Saving Tips",
+      "bestResults": {
+        "title": "Print Settings for Best Results",
+        "margins": "'Margins: None' or 'Minimum':",
+        "marginsDesc": "In your browser's print dialog, set the margins to 'None' or 'Minimum' to ensure the margins you set in the app are applied correctly.",
+        "background": "Enable 'Background Graphics':",
+        "backgroundDesc": "You must enable this option to print the syntax highlighting colors from the editor. (In Chrome, this is under 'More settings'.)"
+      },
+      "troubleshooting": {
+        "title": "Troubleshooting",
+        "layoutBroken": "The layout looks broken in the print preview:",
+        "layoutBrokenDesc": "Please double-check that the 'Margins: None' setting is applied.",
+        "colors": "The colors are not showing up correctly:",
+        "colorsDesc": "Please ensure the 'Background Graphics' option is enabled."
+      }
     },
-    "pageBreak": {
-      "title": "Page Break",
-      "p1": "The red dotted line on the preview screen indicates the automatic page break position based on A4 paper.",
-      "p2": "Clicking the 'Add Page Break' button inserts a manual page break marker (%%%%%%%%%% PAGE_BREAK %%%%%%%%%%) at the cursor's position in the code editor. This marker appears as a blue line in the preview and will also break the page in the actual print."
-    },
-    "margins": {
-      "title": "Page Margins",
-      "p1": "Left and right margins are fixed at 15mm. Top and bottom margins can be adjusted directly in the preview. The adjusted margins are also reflected in the calculation of the red automatic page break lines."
-    },
-    "findReplace": {
-      "title": "Find and Replace",
-      "p1": "You can find specific text or replace it with other text using the Find/Replace feature. It also supports search and replace including newline characters (\n)."
-    },
-    "quickClean": {
-      "title": "Quick Clean",
-      "p1": "Perform common code cleaning tasks with a single click. (e.g., removing consecutive empty lines, lifting closing brackets)"
-    },
-    "undoRedo": {
-      "title": "Undo / Redo",
-      "p1": "You can undo (Ctrl+Z) or redo (Ctrl+Y) up to the last 50 actions."
+    "other": {
+      "title": "Other Useful Information",
+      "security": {
+        "title": "Data Security",
+        "desc": "Your code is valuable. This service does not send your code to a server or store it in a database. All processing is done exclusively within your web browser, so you can use it with peace of mind."
+      },
+      "shortcuts": {
+        "title": "Shortcut Keys",
+        "find": "Open Find/Replace Panel",
+        "undo": "Undo",
+        "redo": "Redo"
+      }
     }
   },
   "about": {
@@ -143,26 +191,6 @@
     "section5": {
       "title": "5. Contact",
       "p1": "For inquiries regarding personal information, please contact us through the 'Contact & Suggestions' link in the footer."
-    }
-  },
-  "blog": {
-    "title": "Blog",
-    "metaDescription": "Find useful tips and information on development, coding, and how to use Code Printer.",
-    "post1": {
-      "title": "5 Tips for Clean Code Output",
-      "date": "July 15, 2025",
-      "p1": "When converting source code to PDF or printing it, readability is crucial. Whether it's for a code review with colleagues, a school assignment, or personal archiving, well-organized code is easier to understand and looks more professional. Here are five tips to improve your code output quality with our Code Printer.",
-      "h2_1": "1. Choose the Right Font",
-      "p2": "It is recommended to use a monospaced font designed for coding. Fonts like D2Coding, Fira Code, and Consolas ensure that characters occupy the same width, maintaining perfect code alignment. They also clearly distinguish between the number '0' and the letter 'O', and the number '1' and the letter 'l', reducing potential confusion.",
-      "h2_2": "2. Utilize Syntax Highlighting",
-      "p3": "Syntax highlighting is a great help in visually grasping the structure of your code. When variables, functions, and reserved words are displayed in different colors, you can follow the flow of the code quickly. Our Code Printer supports syntax highlighting for various programming languages, so it's automatically applied when you paste your code.",
-      "h2_3": "3. The Aesthetics of Margins",
-      "p4": "Proper margins are a key design element that makes content comfortable to view. Setting sufficient margins around your code block eliminates a cramped feeling and improves readability. Adjust the top, bottom, left, and right margins in the print settings to find the optimal layout.",
-      "h2_4": "4. Control Page Breaks",
-      "p5": "You wouldn’t want an important function or class to be cut off in the middle of a page. With our service's 'PAGE_BREAK' feature, you can manually break the page wherever you want. This allows you to group code into logical units, enhancing the completeness of the output.",
-      "h2_5": "5. Clean Up Unnecessary Code",
-      "p6": "Before printing, it’s a good idea to clean up things like `console.log` statements for debugging or unused comments. Keep only the most essential and important code in the final output to create a clean and tidy result.",
-      "p7": "Use these tips to make your source code shine! Our Code Printer will always be there to help you create the best possible output."
     }
   }
 }
