@@ -326,7 +326,7 @@ export default App;
   const handleReplaceAll = () => {
     trackEvent('Editor', 'Click', 'Replace All');
     if (!findText) return;
-    const escapedFindText = findText.replace(/[.*+?^${}()|[\\]]/g, '\$&');
+    const escapedFindText = findText.replace(/[.*+?^${}()|[\]]/g, '\$&');
     const regex = new RegExp(escapedFindText, 'g');
     const matches = editorState.current.match(regex);
     const count = matches ? matches.length : 0;
@@ -384,7 +384,7 @@ export default App;
         redoStack: [prevState.current, ...prevState.redoStack],
       };
     });
-  }, []);
+  }, [trackEvent]);
 
   const handleRedo = useCallback(() => {
     trackEvent('Editor', 'Click', 'Redo');
@@ -398,7 +398,7 @@ export default App;
         redoStack: newRedoStack,
       };
     });
-  }, []);
+  }, [trackEvent]);
 
   const handleKeyDown = useCallback((e) => {
     if (e.ctrlKey) {
