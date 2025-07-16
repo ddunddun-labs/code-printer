@@ -532,7 +532,7 @@ export default App;
                 <button onClick={() => handleQuickReplace('\n\n', '\n', 'alert.quickClean.removeEmptyLines', true)}>
                   {t('quickClean.removeEmptyLines')}
                 </button>
-                <button onClick={() => handleQuickReplace('\n\s*}', ' }', 'alert.quickClean.liftBrackets', true)}>
+                <button onClick={() => handleQuickReplace('\n *\}', ' }', 'alert.quickClean.liftBrackets', true)}>
                   {t('quickClean.liftBrackets')}
                 </button>
                 <button onClick={handleRemoveFirstChar}>
