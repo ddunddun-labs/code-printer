@@ -25,8 +25,7 @@
   },
   "footer": {
     "help": "Help",
-    "privacyPolicy": "Privacy Policy",
-    "suggestImprovements": "Contact & Suggestions"
+    "privacyPolicy": "Privacy Policy"
   },
   "help": {
     "backToApp": "Back to App",
@@ -190,7 +189,7 @@
     },
     "section5": {
       "title": "5. Contact",
-      "p1": "For inquiries regarding personal information, please contact us through the 'Contact & Suggestions' link in the footer."
+      "p1": "For inquiries regarding personal information or service suggestions, please submit an issue on our GitHub repository."
     }
   }
 }

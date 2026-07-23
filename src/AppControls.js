@@ -27,9 +27,6 @@ function AppControls({
           <button onClick={() => onNavigate('privacy')} className="footer-link-button">
             {t('footer.privacyPolicy')}
           </button>
-          <a href="https://forms.gle/VRFFs4yruaMBxtbM7" target="_blank" rel="noopener noreferrer" className="footer-link">
-            {t('footer.suggestImprovements')}
-          </a>
           <span className="language-toggle-separator">|</span>
           <button onClick={toggleLanguage} className="footer-link-button language-toggle-button">
             {i18n.language === 'ko' ? 'English' : 'Korean'}

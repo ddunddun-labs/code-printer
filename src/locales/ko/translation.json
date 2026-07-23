@@ -25,8 +25,7 @@
   },
   "footer": {
     "help": "도움말",
-    "privacyPolicy": "개인정보처리방침",
-    "suggestImprovements": "문의 및 제안"
+    "privacyPolicy": "개인정보처리방침"
   },
   "help": {
     "backToApp": "앱으로 돌아가기",
@@ -190,7 +189,7 @@
     },
     "section5": {
       "title": "5. 문의",
-      "p1": "개인정보 관련 문의는 푸터의 '문의 및 제안' 링크를 통해 연락주시기 바랍니다."
+      "p1": "개인정보 관련 문의 및 서비스 개선 제안은 GitHub 저장소 이슈(Issues)를 통해 등록해 주시기 바랍니다."
     }
   }
 }

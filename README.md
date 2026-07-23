@@ -1,30 +1,66 @@
+# Code Printer 🖨️
 
-# Code Printer
+**[한국어]** | [[English]](./README.en.md)
 
-**[English]** | [[한국어]](./README.ko.md)
+소스 코드를 아름답고 깔끔하게 A4 종이에 인쇄하거나 PDF로 저장할 수 있는 웹 서비스입니다. 
+에디터에 코드를 붙여넣고, 용지 레이아웃과 구문 강조 테마를 자유롭게 설정하여 인쇄해 보세요.
 
-Print your source code beautifully. This web application allows you to paste your code, style it, and print it out on an A4-sized layout, all within your browser.
+---
 
-## Features
+## ✨ 핵심 특징 (Key Features)
 
--   **Real-time Print Preview**: See exactly how your code will look on paper.
--   **Multi-column Layout**: Supports both single and double column layouts.
--   **Syntax Highlighting**: Keeps your code readable with various themes.
--   **Customization**: Adjust fonts, margins, line spacing, and more.
--   **Find & Replace**: Easily make changes to your code.
--   **100% Browser-Based**: Your code is never sent to a server. Everything happens locally in your browser for maximum privacy.
+- 🔒 **100% 브라우저 기반 보안**: 입력한 소스 코드가 외부 서버로 일절 전송되지 않으며, 모든 작업은 브라우저 내에서 로컬로 안전하게 처리됩니다.
+- 📄 **실시간 A4 인쇄 미리보기**: 실제 인쇄될 A4 종이 레이아웃 및 페이지 분할(자동/수동 `PAGE_BREAK`) 상태를 실시간으로 확인 가능합니다.
+- 📑 **다단(Multi-Column) 레이아웃**: 1단 및 2단 레이아웃을 지원하여 긴 소스 코드를 용지 절약하며 효율적으로 출력할 수 있습니다.
+- 🎨 **다채로운 구문 강조 & 커스터마이징**: 다양한 테마, 글꼴(D2Coding 등), 여백, 줄 간격, 헤더/푸터 설정을 정밀하게 조정 가능합니다.
+- 🔍 **찾기 및 바꾸기**: 에디터 내에서 편리하게 코드 내용을 검색하고 일괄 변경할 수 있습니다.
 
-## How to Use
+---
 
-1.  Visit the [Code Printer website](https://simpl.github.io/print-source). <!-- This URL will work after deployment -->
-2.  Paste your code into the editor.
-3.  Use the control panel to adjust styling options.
-4.  Use your browser's print function (Ctrl+P) to print the preview page.
+## 🚀 사용 방법
 
-## Contributing
+1. [Code Printer 웹사이트](https://simpl.github.io/print-source)에 접속합니다.
+2. 에디터에 인쇄할 소스 코드를 붙여넣거나 파일을 드래그 & 드롭합니다.
+3. 오른쪽 컨트롤 패널에서 용지 방향, 단수(1단/2단), 글꼴, 테마 등을 원하는 스타일로 조정합니다.
+4. 브라우저의 인쇄 기능(`Ctrl + P` 또는 `Cmd + P`)을 통해 PDF로 저장하거나 인쇄합니다.
 
-Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) to get started.
+---
 
-## License
+## 💻 로컬 개발 환경 설정 (Local Development)
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. (You'll need to create this file).
+프로젝트에 기여하거나 로컬에서 직접 실행해보고 싶다면 아래 명령어를 참고하세요.
+
+### 프로젝트 클론 및 설치
+```bash
+git clone https://github.com/simpl/print-source.git
+cd print-source
+npm install
+```
+
+### 개발 서버 실행
+```bash
+npm start
+```
+브라우저에서 `http://localhost:3000`으로 접속하여 결과를 확인할 수 있습니다.
+
+### 테스트 및 빌드
+```bash
+# 테스트 실행
+npm test
+
+# 프로덕션 빌드
+npm run build
+```
+
+---
+
+## 🤝 기여하기 (Contributing)
+
+버그 리포트, 기능 제안, 풀 리퀘스트(PR)를 언제든 환영합니다!  
+자세한 내용은 [기여 가이드라인](CONTRIBUTING.md)을 참조해 주세요.
+
+---
+
+## 📄 라이선스 (License)
+
+이 프로젝트는 [MIT 라이선스](LICENSE)를 따릅니다.
