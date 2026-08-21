@@ -2,7 +2,7 @@
 
 **[한국어]** | [[English]](./README.en.md)
 
-소스 코드를 아름답고 깔끔하게 A4 종이에 인쇄하거나 PDF로 저장할 수 있는 웹 서비스입니다. 
+소스 코드를 아름답고 깔끔하게 A4 종이에 인쇄하거나 PDF로 저장할 수 있는 웹 서비스입니다.  
 에디터에 코드를 붙여넣고, 용지 레이아웃과 구문 강조 테마를 자유롭게 설정하여 인쇄해 보세요.
 
 ---
@@ -19,7 +19,7 @@
 
 ## 🚀 사용 방법
 
-1. [Code Printer 웹사이트](https://simpl.github.io/print-source)에 접속합니다.
+1. [Code Printer 웹사이트](https://code-printer.sysscalper.workers.dev/)에 접속합니다.
 2. 에디터에 인쇄할 소스 코드를 붙여넣거나 파일을 드래그 & 드롭합니다.
 3. 오른쪽 컨트롤 패널에서 용지 방향, 단수(1단/2단), 글꼴, 테마 등을 원하는 스타일로 조정합니다.
 4. 브라우저의 인쇄 기능(`Ctrl + P` 또는 `Cmd + P`)을 통해 PDF로 저장하거나 인쇄합니다.
@@ -28,12 +28,12 @@
 
 ## 💻 로컬 개발 환경 설정 (Local Development)
 
-프로젝트에 기여하거나 로컬에서 직접 실행해보고 싶다면 아래 명령어를 참고하세요.
+프로젝트에 기여하거나 로컬에서 직접 실행하고 싶다면 아래 명령어를 사용하세요.
 
 ### 프로젝트 클론 및 설치
 ```bash
-git clone https://github.com/simpl/print-source.git
-cd print-source
+git clone https://github.com/ddunddun-labs/code-printer.git
+cd code-printer
 npm install
 ```
 
@@ -51,6 +51,12 @@ npm test
 # 프로덕션 빌드
 npm run build
 ```
+
+---
+
+## ☁️ 배포
+
+프로덕션 사이트는 Cloudflare Workers Static Assets로 배포됩니다. `main` 브랜치에 반영된 변경 사항은 Cloudflare의 Git 연동을 통해 자동 빌드·배포됩니다.
 
 ---
 
