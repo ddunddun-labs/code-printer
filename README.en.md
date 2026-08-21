@@ -2,7 +2,7 @@
 
 [[한국어]](./README.md) | **[English]**
 
-Print your source code beautifully and neatly on A4 paper or save it as PDF. 
+Print your source code beautifully and neatly on A4 paper or save it as PDF.  
 Simply paste your code, customize page layout and syntax themes, and print right inside your browser.
 
 ---
@@ -19,7 +19,7 @@ Simply paste your code, customize page layout and syntax themes, and print right
 
 ## 🚀 How to Use
 
-1. Visit the [Code Printer Website](https://simpl.github.io/print-source).
+1. Visit the [Code Printer Website](https://code-printer.sysscalper.workers.dev/).
 2. Paste your source code or drag and drop a file into the editor.
 3. Use the right control panel to adjust paper layout, columns, font, and theme.
 4. Print or save as PDF using your browser's print feature (`Ctrl + P` / `Cmd + P`).
@@ -32,8 +32,8 @@ If you'd like to contribute or run the project locally:
 
 ### Clone and Install
 ```bash
-git clone https://github.com/simpl/print-source.git
-cd print-source
+git clone https://github.com/ddunddun-labs/code-printer.git
+cd code-printer
 npm install
 ```
 
@@ -51,6 +51,12 @@ npm test
 # Build for production
 npm run build
 ```
+
+---
+
+## ☁️ Deployment
+
+The production site is deployed with Cloudflare Workers Static Assets. Changes merged into `main` are built and deployed through Cloudflare's Git integration.
 
 ---
 
