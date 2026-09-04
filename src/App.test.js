@@ -2,8 +2,17 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
+import { CodePrinterProvider } from './state/CodePrinterProvider';
 
 // i18next 초기화 모의(mock)
+jest.mock('./i18n', () => ({
+  __esModule: true,
+  default: {
+    changeLanguage: jest.fn(() => Promise.resolve()),
+    language: 'ko',
+  },
+}));
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key, options) => {
@@ -24,8 +33,8 @@ jest.mock('react-i18next', () => ({
         'alert.quickClean.liftBrackets': '닫는 괄호 올리기 정리 완료!',
         'alert.removeFirstChar': '첫 문자 제거 완료!',
         'alert.noMatches': '일치하는 내용이 없습니다.',
-        'findReplace.findLabel': '찾을 내용:',
-        'findReplace.replaceLabel': '바꿀 내용:',
+        'findReplace.findLabel': '찾을 내용',
+        'findReplace.replaceLabel': '바꿀 내용',
       };
       return translations[key] || key;
     },
@@ -52,7 +61,11 @@ describe('App Component Feature Tests', () => {
 
   const setup = async () => {
     const user = userEvent.setup();
-    render(<App />);
+    render(
+      <CodePrinterProvider>
+        <App />
+      </CodePrinterProvider>,
+    );
     const textarea = screen.getByTestId('code-editor');
     const findReplaceButton = screen.getByText('찾기/바꾸기');
     await user.click(findReplaceButton);

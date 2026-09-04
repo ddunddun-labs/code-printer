@@ -3,17 +3,18 @@
 [[한국어]](./README.md) | **[English]**
 
 Print your source code beautifully and neatly on A4 paper or save it as PDF.  
-Simply paste your code, customize page layout and syntax themes, and print right inside your browser.
+Simply paste your code, customize page layout, fonts, and margins, and print right inside your browser.
 
 ---
 
 ## ✨ Key Features
 
-- 🔒 **100% Browser-Based Privacy**: Your code is never sent to any server. Everything is processed locally inside your browser for complete privacy.
+- 🔒 **100% Browser-Based Privacy**: Your code is never sent to any server. Everything is processed locally inside your browser.
 - 📄 **Real-time A4 Print Preview**: Preview exactly how your code will look on paper with automatic and manual page breaks (`PAGE_BREAK`).
 - 📑 **Multi-Column Layout**: Supports both 1-column and 2-column layouts to save paper and present long code efficiently.
-- 🎨 **Syntax Highlighting & Customization**: Adjust themes, fonts, margins, line spacing, headers, and footers precisely.
+- 🎨 **Syntax Highlighting & Customization**: Adjust fonts, margins, line spacing, and letter spacing precisely.
 - 🔍 **Find & Replace**: Easily search and modify code within the editor.
+- 🤖 **Agent API**: Automate settings and code via URL parameters and `window.codePrinter`. See [llms.txt](./public/llms.txt).
 
 ---
 
@@ -21,7 +22,7 @@ Simply paste your code, customize page layout and syntax themes, and print right
 
 1. Visit the [Code Printer Website](https://code-printer.sysscalper.workers.dev/).
 2. Paste your source code or drag and drop a file into the editor.
-3. Use the right control panel to adjust paper layout, columns, font, and theme.
+3. Use the right control panel to adjust columns, font, and margins.
 4. Print or save as PDF using your browser's print feature (`Ctrl + P` / `Cmd + P`).
 
 ---
@@ -63,7 +64,7 @@ The production site is deployed with Cloudflare Workers Static Assets. Changes m
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!  
-Check out the [contributing guidelines](CONTRIBUTING.md) to get started.
+See [GitHub Issues](https://github.com/ddunddun-labs/code-printer/issues) or the [contributing guidelines](CONTRIBUTING.md).
 
 ---
 

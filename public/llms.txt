@@ -1,0 +1,101 @@
+# Code Printer
+
+> Browser-only source code printing for A4/PDF. No server upload.
+
+## When to use
+
+- Print or save source code as PDF with syntax highlighting
+- Keep code 100% local (nothing sent to servers)
+- A4 layout preview with 1/2 columns and manual page breaks
+
+## Quick start
+
+1. Open the app (`/`).
+2. Paste code into the editor or use `window.codePrinter.apply({ code: "..." })`.
+3. Adjust settings via URL query or Agent API (below).
+4. Print with Ctrl+P / Cmd+P (enable background graphics, minimum margins).
+
+## URL parameters
+
+| Param | Values | Description |
+|-------|--------|-------------|
+| `ui` | `ko`, `en` | UI language |
+| `lang` | `javascript`, `python`, `java`, `csharp`, `cpp`, `html`, `css`, `sql`, `plaintext` | Syntax highlighting |
+| `font` | `D2Coding`, `Consolas`, `CourierNew`, `UbuntuMono` | Font family key |
+| `size` | number | Font size (pt) |
+| `spacing` | number | Letter spacing (px) |
+| `lineHeight` | number | Line height multiplier |
+| `cols` | `1`, `2` | Column layout |
+| `margin` | `default`, `none`, `minimum`, `custom` | Margin preset |
+| `mt`, `mb`, `ml`, `mr` | number (mm) | Custom margins |
+| `find` | `1` | Open find/replace panel |
+| `panel` | `none`, `style`, `paper` | Preview panel state |
+
+## URL hash (code)
+
+- `#code=<base64url>` — initial editor content (client-side only)
+
+Example: `/?lang=python&cols=2&font=D2Coding#code=...`
+
+## Routes
+
+- `/` — editor
+- `/help` — help
+
+## External links
+
+- Creator hub: https://ddunddun-hub.sysscalper.workers.dev/
+- GitHub Issues: https://github.com/ddunddun-labs/code-printer/issues
+
+## Agent API (`window.codePrinter`)
+
+Available after page load. All operations stay in the browser.
+
+```javascript
+// Read state
+window.codePrinter.getState();
+
+// Update settings and/or code
+window.codePrinter.apply({
+  syntaxLang: 'python',
+  style: { fontFamilyKey: 'D2Coding', fontSize: 10 },
+  paper: { columns: 2, marginPreset: 'minimum' },
+  code: 'print("hello")',
+});
+
+// Actions
+window.codePrinter.run('undo');
+window.codePrinter.run('insertPageBreak');
+window.codePrinter.run('replaceAll');
+window.codePrinter.run('quickClean', { type: 'removeEmptyLines' });
+window.codePrinter.run('loadFile', { name: 'app.py', content: '...' });
+window.codePrinter.run('print', { skipModal: true });
+window.codePrinter.run('navigate', { view: 'help' });
+
+// Subscribe to changes
+window.codePrinter.subscribe(() => console.log(window.codePrinter.getState()));
+```
+
+## PAGE_BREAK marker
+
+Exact line (manual page break):
+
+```
+%%%%%%%%%% PAGE_BREAK %%%%%%%%%%
+```
+
+## Print checklist
+
+- Browser print margins: **None** or **Minimum**
+- Enable **Background graphics** for syntax colors
+
+## Limitations
+
+- No server-side PDF API (privacy by design)
+- `window.print()` may require user gesture in some browsers
+- Syntax theme is fixed (GitHub style)
+- Very long code in URL hash may hit browser URL length limits
+
+## Schema
+
+Machine-readable API schema: `/agent-schema.json`

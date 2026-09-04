@@ -6,7 +6,7 @@ First off, thank you for considering contributing to Code Printer! It's people l
 ## How Can I Contribute?
 
 ### Reporting Bugs
-If you find a bug, please make sure it hasn't been reported yet by searching on GitHub under [Issues](https://github.com/simpl/print-source/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+If you find a bug, please make sure it hasn't been reported yet by searching on GitHub under [Issues](https://github.com/ddunddun-labs/code-printer/issues). If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
 
 ### Suggesting Enhancements
 If you have an idea for an enhancement, please open an issue to discuss it. This allows us to coordinate efforts and prevent duplication of work.
@@ -35,7 +35,7 @@ Code Printer 프로젝트에 기여해주셔서 진심으로 감사합니다. �
 ## 어떻게 기여할 수 있나요?
 
 ### 버그 제보
-버그를 발견하셨다면, 먼저 [GitHub 이슈](https://github.com/simpl/print-source/issues)에서 동일한 버그가 보고되었는지 확인해주세요. 관련된 이슈가 없다면 새로운 이슈를 열어주세요. 이슈에는 명확한 제목과 설명, 관련 정보, 그리고 예상되는 동작을 보여주는 코드 예제나 테스트 케이스를 포함해주시면 좋습니다.
+버그를 발견하셨다면, 먼저 [GitHub 이슈](https://github.com/ddunddun-labs/code-printer/issues)에서 동일한 버그가 보고되었는지 확인해주세요. 관련된 이슈가 없다면 새로운 이슈를 열어주세요. 이슈에는 명확한 제목과 설명, 관련 정보, 그리고 예상되는 동작을 보여주는 코드 예제나 테스트 케이스를 포함해주시면 좋습니다.
 
 ### 기능 제안
 새로운 기능에 대한 아이디어가 있다면, 이슈를 열어 논의를 시작해주세요. 이를 통해 중복 작업을 방지하고 효율적으로 협업할 수 있습니다.

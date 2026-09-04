@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Code Printer Agent API",
+  "description": "Browser-only agent interface for Code Printer. See /llms.txt for usage.",
+  "type": "object",
+  "properties": {
+    "version": { "const": "1" },
+    "getState": {
+      "description": "Returns current app state snapshot"
+    },
+    "apply": {
+      "description": "Partial state update",
+      "type": "object",
+      "properties": {
+        "view": { "enum": ["app", "help"] },
+        "uiLang": { "enum": ["ko", "en"] },
+        "code": { "type": "string" },
+        "syntaxLang": {
+          "enum": ["javascript", "python", "java", "csharp", "cpp", "html", "css", "sql", "plaintext"]
+        },
+        "style": {
+          "type": "object",
+          "properties": {
+            "fontFamilyKey": { "enum": ["D2Coding", "Consolas", "CourierNew", "UbuntuMono"] },
+            "fontSize": { "type": "number" },
+            "letterSpacing": { "type": "number" },
+            "lineHeight": { "type": "number", "minimum": 1 }
+          }
+        },
+        "paper": {
+          "type": "object",
+          "properties": {
+            "columns": { "enum": [1, 2] },
+            "marginPreset": { "enum": ["default", "none", "minimum", "custom"] },
+            "customMargins": {
+              "type": "object",
+              "properties": {
+                "top": { "type": "number" },
+                "bottom": { "type": "number" },
+                "left": { "type": "number" },
+                "right": { "type": "number" }
+              }
+            }
+          }
+        },
+        "panels": {
+          "type": "object",
+          "properties": {
+            "findReplace": { "type": "boolean" },
+            "previewStyle": { "type": "boolean" },
+            "previewPaper": { "type": "boolean" }
+          }
+        },
+        "findReplace": {
+          "type": "object",
+          "properties": {
+            "find": { "type": "string" },
+            "replace": { "type": "string" }
+          }
+        }
+      }
+    },
+    "run": {
+      "description": "Imperative actions",
+      "oneOf": [
+        { "properties": { "action": { "const": "undo" } } },
+        { "properties": { "action": { "const": "redo" } } },
+        { "properties": { "action": { "const": "insertPageBreak" }, "args": { "type": "object", "properties": { "at": { "type": "integer" } } } } },
+        { "properties": { "action": { "const": "removePageBreak" }, "args": { "type": "object", "properties": { "at": { "type": "integer" } } } } },
+        { "properties": { "action": { "const": "findNext" } } },
+        { "properties": { "action": { "const": "replace" } } },
+        { "properties": { "action": { "const": "replaceAll" } } },
+        {
+          "properties": {
+            "action": { "const": "quickClean" },
+            "args": {
+              "type": "object",
+              "properties": {
+                "type": { "enum": ["removeEmptyLines", "liftBrackets", "removeFirstChar"] }
+              },
+              "required": ["type"]
+            }
+          }
+        },
+        {
+          "properties": {
+            "action": { "const": "loadFile" },
+            "args": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "content": { "type": "string" }
+              },
+              "required": ["content"]
+            }
+          }
+        },
+        {
+          "properties": {
+            "action": { "const": "print" },
+            "args": {
+              "type": "object",
+              "properties": { "skipModal": { "type": "boolean" } }
+            }
+          }
+        },
+        {
+          "properties": {
+            "action": { "const": "navigate" },
+            "args": {
+              "type": "object",
+              "properties": { "view": { "enum": ["app", "help"] } },
+              "required": ["view"]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

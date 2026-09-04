@@ -4,13 +4,16 @@ import { HelmetProvider } from 'react-helmet-async';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { CodePrinterProvider } from './state/CodePrinterProvider';
 import './i18n'; // i18n 설정 파일 불러오기
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <HelmetProvider>
-      <App />
+      <CodePrinterProvider>
+        <App />
+      </CodePrinterProvider>
     </HelmetProvider>
   </React.StrictMode>
 );

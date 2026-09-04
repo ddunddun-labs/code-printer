@@ -28,3 +28,7 @@ yarn-error.log*
 # temp files
 *.tmp
 
+# local agent / editor tooling
+.cliagent-room/
+.mcp.json
+

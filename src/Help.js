@@ -84,6 +84,13 @@ function Help({ onNavigate }) {
         <li><strong>Ctrl+Z:</strong> {t('help.other.shortcuts.undo')}</li>
         <li><strong>Ctrl+Y:</strong> {t('help.other.shortcuts.redo')}</li>
       </ul>
+      <h3>{t('help.other.feedback.title')}</h3>
+      <p>
+        {t('help.other.feedback.desc')}{' '}
+        <a href="https://github.com/ddunddun-labs/code-printer/issues" target="_blank" rel="noopener noreferrer">
+          GitHub Issues
+        </a>
+      </p>
     </div>
   );
 }

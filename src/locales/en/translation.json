@@ -25,7 +25,7 @@
   },
   "footer": {
     "help": "Help",
-    "privacyPolicy": "Privacy Policy"
+    "hub": "ddunddun Hub"
   },
   "help": {
     "backToApp": "Back to App",
@@ -112,6 +112,10 @@
         "find": "Open Find/Replace Panel",
         "undo": "Undo",
         "redo": "Redo"
+      },
+      "feedback": {
+        "title": "Feedback",
+        "desc": "Report bugs and suggest features on GitHub Issues."
       }
     }
   },
@@ -157,39 +161,5 @@
   "header": {
     "siteTitle": "Code Printer",
     "siteTagline": "Print your source code cleanly, efficiently, and securely."
-  },
-  "privacyPolicy": {
-    "title": "Privacy Policy",
-    "metaDescription": "Read the Privacy Policy for Code Printer. Learn about the information we collect, its purpose, and our cookie policy when you use our service.",
-    "lastUpdated": "Last Updated",
-    "section1": {
-      "title": "1. Information We Collect",
-      "p1": "This service (code-printer) may automatically collect the following information to improve user convenience and maintain service quality:",
-      "item1": "Cookies",
-      "item2": "Advertising Identifiers",
-      "item3": "Service usage records such as IP address, browser type, and device information",
-      "p2": "This information is non-identifying and does not specify an individual."
-    },
-    "section2": {
-      "title": "2. Purpose of Collection and Use of Personal Information",
-      "p1": "This service uses the collected information for the following purposes:",
-      "item1": "Providing personalized ads through third-party ad providers like Google AdSense",
-      "item2": "Analyzing service usage statistics and improving quality",
-      "item3": "Optimizing user experience"
-    },
-    "section3": {
-      "title": "3. Information Collection by Cookies",
-      "p1": "This service may allow third-party ad providers, including Google AdSense, to use cookies to serve ads based on a user's prior visits to your website or other websites.",
-      "p2": "Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.",
-      "p3": "Users may opt out of personalized advertising by visiting <1>Google Ad Settings</1>. Alternatively, users can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <3>www.aboutads.info/choices</3>."
-    },
-    "section4": {
-      "title": "4. Changes to the Privacy Policy",
-      "p1": "Any additions, deletions, or corrections to the policy due to changes in laws and regulations will be notified through an announcement at least 7 days before the changes take effect."
-    },
-    "section5": {
-      "title": "5. Contact",
-      "p1": "For inquiries regarding personal information or service suggestions, please submit an issue on our GitHub repository."
-    }
   }
 }
