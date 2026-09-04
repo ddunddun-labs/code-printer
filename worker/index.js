@@ -52,7 +52,7 @@ export default {
     }
 
     if (isSpaRoute(pathname)) {
-      const indexRequest = new Request(new URL('/index.html', url.origin), request);
+      const indexRequest = new Request(new URL('/', url.origin), request);
       const indexResponse = await env.ASSETS.fetch(indexRequest);
       if (!indexResponse.ok) {
         return notFoundResponse(request, pathname);
