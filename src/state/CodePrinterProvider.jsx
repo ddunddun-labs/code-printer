@@ -149,7 +149,7 @@ export function CodePrinterProvider({ children }) {
       textarea.focus();
       textarea.setSelectionRange(newCursorPosition, newCursorPosition);
     }, 0);
-  }, [editorState.current, updateCodeImmediately]);
+  }, [editorState, updateCodeImmediately]);
 
   const handleRemovePageBreak = useCallback(() => {
     if (!textareaRef.current) return;
@@ -200,7 +200,7 @@ export function CodePrinterProvider({ children }) {
       textarea.focus();
       textarea.setSelectionRange(newCursorPosition, newCursorPosition);
     }, 0);
-  }, [editorState.current, updateCodeImmediately]);
+  }, [editorState, updateCodeImmediately]);
 
   const findAndSelectNext = useCallback((startIndex = 0, code = editorState.current) => {
     const textarea = textareaRef.current;
@@ -222,7 +222,7 @@ export function CodePrinterProvider({ children }) {
       textarea.scrollTop = scrollTop - (textarea.clientHeight / 2);
     }
     return nextIndex;
-  }, [editorState.current, settings.findText]);
+  }, [editorState, settings.findText]);
 
   const handleFindNext = useCallback(() => {
     const foundIndex = findAndSelectNext(textareaRef.current?.selectionEnd || 0);
@@ -263,7 +263,7 @@ export function CodePrinterProvider({ children }) {
     }, 0);
 
     return true;
-  }, [editorState.current, settings.findText, settings.replaceText, updateCodeImmediately]);
+  }, [editorState, settings.findText, settings.replaceText, updateCodeImmediately]);
 
   const handleReplaceAll = useCallback(() => {
     if (!settings.findText) return 0;
@@ -277,7 +277,7 @@ export function CodePrinterProvider({ children }) {
       updateCodeImmediately(newCode);
     }
     return count;
-  }, [editorState.current, settings.findText, settings.replaceText, updateCodeImmediately]);
+  }, [editorState, settings.findText, settings.replaceText, updateCodeImmediately]);
 
   const handleQuickReplace = useCallback((find, replace, useRegex = false) => {
     let newCode;
@@ -293,7 +293,7 @@ export function CodePrinterProvider({ children }) {
       return true;
     }
     return false;
-  }, [editorState.current, updateCodeImmediately]);
+  }, [editorState, updateCodeImmediately]);
 
   const handleRemoveFirstChar = useCallback(() => {
     const lines = editorState.current.split('\n');
@@ -307,7 +307,7 @@ export function CodePrinterProvider({ children }) {
       return true;
     }
     return false;
-  }, [editorState.current, updateCodeImmediately]);
+  }, [editorState, updateCodeImmediately]);
 
   const handleUndo = useCallback(() => {
     setEditorState((prevState) => {

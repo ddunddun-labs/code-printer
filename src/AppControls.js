@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { GITHUB_REPO_URL, HUB_URL } from './state/constants';
+import { HUB_URL } from './state/constants';
 import './AppControls.css';
 
 function AppControls({

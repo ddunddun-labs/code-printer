@@ -3,7 +3,6 @@ import {
   MARGIN_PRESETS,
   PREVIEW_PANELS,
   SYNTAX_LANGUAGES,
-  VIEWS,
   createDefaultSettingsState,
 } from './constants';
 
