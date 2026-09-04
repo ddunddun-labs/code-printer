@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -7,42 +7,49 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="온라인에서 소스 코드를 깔끔하게 인쇄하고 PDF로 변환하세요. 구문 강조, 페이지 나누기, 실시간 미리보기, 강력한 편집 도구를 제공하여 개발자에게 최적화된 코드 출력 경험을 선사합니다."
+      content="Code Printer prints source code on A4 with syntax highlighting, page breaks, and a live preview. All editing stays in your browser; code is never uploaded to a server."
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <!-- Google AdSense script placeholder -->
-    <!-- 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_CLIENT_ID"
-     crossorigin="anonymous"></script>
-    -->
-    <title>Code Printer - 소스 코드 인쇄 및 PDF 변환 | 깔끔한 코드 출력</title>
+    <link rel="alternate" type="text/markdown" href="%PUBLIC_URL%/llms.txt" title="Agent documentation" />
+    <title>Code Printer - Source Code Print and PDF Export</title>
+    <style>
+      #static-site-intro { max-width: 960px; margin: 0 auto; padding: 16px 20px; color: #333; line-height: 1.6; }
+      #static-site-intro h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+      #static-site-intro h2 { font-size: 1.125rem; margin: 1.25rem 0 0.5rem; }
+      #static-site-intro ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+      #static-site-intro a { color: #0056b3; }
+    </style>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <main id="static-site-intro">
+      <h1>Code Printer</h1>
+      <p>
+        Code Printer is a browser-based tool for printing source code on A4 paper or saving it as PDF.
+        Paste code, adjust fonts and margins, preview page breaks, and print. Your code is processed
+        entirely in the browser and is never sent to our servers.
+      </p>
+      <h2>Key features</h2>
+      <ul>
+        <li>100% local processing in the browser</li>
+        <li>Live A4 print preview with 1-column and 2-column layouts</li>
+        <li>Syntax highlighting, find and replace, and manual page breaks</li>
+        <li>Agent integration via <a href="%PUBLIC_URL%/llms.txt">llms.txt</a> and <a href="%PUBLIC_URL%/openapi.json">openapi.json</a></li>
+      </ul>
+      <h2>Get started</h2>
+      <p>
+        Open the editor, paste your code, use the controls on the right to customize layout, then press
+        Ctrl+P or Cmd+P to print or save as PDF. Enable background graphics in the browser print dialog
+        to keep syntax colors.
+      </p>
+      <p>
+        한국어: 소스 코드를 A4에 맞춰 인쇄하거나 PDF로 저장하는 도구입니다. 코드는 브라우저 안에서만
+        처리되며 서버로 전송되지 않습니다.
+      </p>
+    </main>
+    <noscript>
+      <p>JavaScript is required to use the interactive editor. Read <a href="%PUBLIC_URL%/llms.txt">llms.txt</a> for agent documentation.</p>
+    </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

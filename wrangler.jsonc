@@ -1,9 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "code-printer",
+  "main": "worker/index.js",
   "compatibility_date": "2026-08-21",
   "assets": {
     "directory": "./build",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS"
   }
 }

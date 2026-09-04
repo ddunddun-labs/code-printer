@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import { CodePrinterProvider } from './state/CodePrinterProvider';
 import './i18n'; // i18n 설정 파일 불러오기
 
+document.getElementById('static-site-intro')?.remove();
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

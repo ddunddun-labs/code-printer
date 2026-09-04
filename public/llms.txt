@@ -99,3 +99,9 @@ Exact line (manual page break):
 ## Schema
 
 Machine-readable API schema: `/agent-schema.json`
+
+## HTTP API
+
+- OpenAPI: `/openapi.json`
+- Capabilities: `/api/agent/capabilities`
+- Unknown paths return HTTP 404 (JSON when `Accept: application/json`)

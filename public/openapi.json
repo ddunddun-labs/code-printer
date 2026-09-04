@@ -1,0 +1,139 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Code Printer Agent HTTP Surface",
+    "version": "1.0.0",
+    "description": "HTTP endpoints for Code Printer. The interactive editor runs in the browser; primary agent control is via window.codePrinter (see /llms.txt). This spec documents HTTP routes, content negotiation, and structured errors."
+  },
+  "servers": [
+    {
+      "url": "https://code-printer.sysscalper.workers.dev"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Homepage",
+        "description": "Returns static HTML intro content without JavaScript. With Accept: text/markdown, returns /llms.txt content.",
+        "responses": {
+          "200": {
+            "description": "Homepage HTML or markdown (content negotiation)"
+          }
+        }
+      }
+    },
+    "/help": {
+      "get": {
+        "summary": "Help page",
+        "description": "SPA help route. With Accept: text/markdown, returns help.md.",
+        "responses": {
+          "200": {
+            "description": "Help HTML or markdown"
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "summary": "Agent documentation",
+        "responses": {
+          "200": {
+            "description": "Markdown agent guide",
+            "content": {
+              "text/plain": {}
+            }
+          }
+        }
+      }
+    },
+    "/agent-schema.json": {
+      "get": {
+        "summary": "Browser Agent API JSON Schema",
+        "responses": {
+          "200": {
+            "description": "Schema for window.codePrinter.apply/run payloads"
+          }
+        }
+      }
+    },
+    "/api/agent/capabilities": {
+      "get": {
+        "summary": "Agent capabilities metadata",
+        "responses": {
+          "200": {
+            "description": "JSON metadata about client-only agent integration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "clientOnly": { "type": "boolean" },
+                    "browserApi": { "type": "string" },
+                    "docs": { "type": "string" },
+                    "schema": { "type": "string" },
+                    "openapi": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{unknownPath}": {
+      "get": {
+        "summary": "Unknown paths",
+        "description": "Returns HTTP 404. With Accept: application/json, returns structured JSON error.",
+        "parameters": [
+          {
+            "name": "unknownPath",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              },
+              "text/markdown": {
+                "schema": { "type": "string" }
+              },
+              "text/html": {
+                "schema": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message", "path", "hints"],
+            "properties": {
+              "code": { "type": "string", "example": "NOT_FOUND" },
+              "message": { "type": "string" },
+              "path": { "type": "string" },
+              "hints": {
+                "type": "array",
+                "items": { "type": "string", "format": "uri" }
+              },
+              "resolution": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
