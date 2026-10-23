@@ -15,7 +15,11 @@ export const MARGIN_PRESETS = ['default', 'none', 'minimum', 'custom'];
 
 export const VIEWS = ['app', 'help'];
 
-export const HUB_URL = 'https://ddunddun-hub.sysscalper.workers.dev/';
+export const getHubUrl = (language) => (
+  String(language || '').toLowerCase().startsWith('ko')
+    ? 'https://ddunddunlabs.com/ko/'
+    : 'https://ddunddunlabs.com/'
+);
 
 export const SITE_URL = 'https://code-printer.sysscalper.workers.dev/';
 

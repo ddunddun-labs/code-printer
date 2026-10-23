@@ -44,7 +44,7 @@ Example: `/?lang=python&cols=2&font=D2Coding#code=...`
 
 ## External links
 
-- Creator hub: https://ddunddun-hub.sysscalper.workers.dev/
+- Creator hub: https://ddunddunlabs.com/
 - GitHub Issues: https://github.com/ddunddun-labs/code-printer/issues
 
 ## Agent API (`window.codePrinter`)

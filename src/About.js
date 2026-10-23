@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { GITHUB_REPO_URL, HUB_URL } from './state/constants';
+import { GITHUB_REPO_URL, getHubUrl } from './state/constants';
 import './About.css';
 
 const About = ({ onNavigate }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const pageTitle = t('about.title');
   const pageDescription = t('about.metaDescription');
@@ -37,7 +37,7 @@ const About = ({ onNavigate }) => {
       </p>
       <p>
         더 많은 프로젝트는{' '}
-        <a href={HUB_URL} target="_blank" rel="noopener noreferrer">ddunddun Hub</a>
+        <a href={getHubUrl(i18n.resolvedLanguage || i18n.language)} target="_blank" rel="noopener noreferrer">ddunddun Hub</a>
         에서 확인할 수 있습니다.
       </p>
     </div>

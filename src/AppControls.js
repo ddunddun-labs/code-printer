@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { HUB_URL } from './state/constants';
+import { getHubUrl } from './state/constants';
 import './AppControls.css';
 
 function AppControls({
@@ -33,7 +33,7 @@ function AppControls({
             {t('footer.help')}
           </button>
           <a
-            href={HUB_URL}
+            href={getHubUrl(i18n.resolvedLanguage || i18n.language)}
             target="_blank"
             rel="noopener noreferrer"
             className="footer-link"
