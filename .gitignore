@@ -32,3 +32,6 @@ yarn-error.log*
 .cliagent-room/
 .mcp.json
 
+/.wrangler/state/v3/cache/miniflare-CacheObject/
+
+/.wrangler/state/v3/observability/miniflare-wobs-trace-store/
